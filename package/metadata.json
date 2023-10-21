@@ -1,0 +1,25 @@
+{
+    "KPlugin": {
+        "Authors": [
+            {
+                "Email": "luisbocanegra17b@gmail.com",
+                "Name": "Luis Bocanegra"
+            }
+        ],
+        "BugReportUrl": "https://github.com/luisbocanegra/plasma-intel-gpu-top/issues",
+        "Category": "System Information",
+        "Description": "Display Intel GPU stats including wether or not video acceleration is being used",
+        "Id": "luisbocanegra.intel-gpu-top",
+        "EnabledByDefault": "true",
+        "Icon":"show-gpu-effects",
+        "License": "GPL-3.0",
+        "Name": "Intel GPU Top",
+        "Version": "0.1.0",
+        "Website": "https://github.com/luisbocanegra/plasma-intel-gpu-top"
+    },
+    "KPackageStructure": "Plasma/Applet",
+    "X-Plasma-API": "declarativeappletscript",
+    "X-Plasma-MainScript": "ui/main.qml",
+    "X-Plasma-NotificationArea": "true",
+    "X-Plasma-NotificationAreaCategory": "Hardware"
+}
