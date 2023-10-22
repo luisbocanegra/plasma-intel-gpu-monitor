@@ -15,10 +15,12 @@ Item {
     Layout.preferredWidth: root.height
     Layout.preferredHeight: root.width
 
+    property var engineIcon
+
 
     Components.PlasmoidIcon {
         width: isVertical ? root.height : root.width
-        customIcon: plasmoid.configuration.icon
+        engineIcon: root.engineIcon
     }
 
     MouseArea {

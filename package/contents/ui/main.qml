@@ -17,8 +17,10 @@ Item {
     property var usageLast: {}
     property var clients3d: []
     property var clientsVideo: []
+    property var engineIcon
 
     Plasmoid.compactRepresentation: CompactRepresentation {
+        engineIcon: root.engineIcon
         PlasmaCore.ToolTipArea {
             anchors.fill: parent
             mainItem: Tooltip {
@@ -41,7 +43,7 @@ Item {
     property string statsString: ""
     
     // for file in /sys/block/*; do if [[ $(cat "${file}/removable") -eq 1 ]]; then; echo "$file $(cat ${file}/stat) $(cat ${file}/device/vendor) $(cat ${file}/device/model)"; fi; done
-    property string statsCommand: "timeout 1s intel_gpu_top -d drm:/dev/dri/card1 -J -s 200"
+    property string statsCommand: "timeout 1.5s intel_gpu_top -d drm:/dev/dri/card1 -J -s 500"
     //property string statsCommand: "for file in /sys/block/*; do echo \"$file $(cat ${file}/stat) $(cat ${file}/device/vendor) $(cat ${file}/device/model)\"; done"
 
     // Plasmoid.fullRepresentation: FullRepresentation {
@@ -72,15 +74,16 @@ Item {
     Connections {
         target: getStats
         function onExited(cmd, exitCode, exitStatus, stdout, stderr) {
-            console.log("CHECK STATS");
-            console.log("cmd:",cmd);
+            //console.log("CHECK STATS");
+            //console.log("cmd:",cmd);
             //console.log("exitCode:",exitCode);
             //console.log("stdout:",stdout);
-            console.log("stderr:",stderr);
+            //console.log("stderr:",stderr);
             statsString = stdout.trim(); //.replace('\n', '')
             usageNow = getCurrentUsage(statsString);
             clients3d = getSortedClients(usageNow,'Render/3D')
             clientsVideo = getSortedClients(usageNow,'Video')
+            engineIcon = getIcon(usageNow)
         }
     }
 
@@ -118,7 +121,7 @@ Item {
             }
         });
 
-        console.log(goodObjects.length);
+        //console.log(goodObjects.length);
 
         if (goodObjects.length>1) {
             var stats = goodObjects[goodObjects.length -1];
@@ -134,15 +137,15 @@ Item {
         }
     }
 
-    function getSortedClients(data, engineClass, count=-3) {
+    function getSortedClients(usageNow, engineClass, count=-3) {
 
         // Filter out clients based on 'busy' value of the specified engine class
-        var filteredClients = Object.keys(data.clients).filter(function (clientId) {
-            var clientData = data.clients[clientId];
-            return engineClass in clientData['engine-classes'] && parseFloat(clientData['engine-classes'][engineClass]['busy']) != 0;
+        var filteredClients = Object.keys(usageNow.clients).filter(function (clientId) {
+            var clientData = usageNow.clients[clientId];
+            return engineClass in clientData['engine-classes'] && parseFloat(clientData['engine-classes'][engineClass]['busy']) > 0;
         }).map(function (clientId) {
             // Include client info in the list
-            var clientData = data.clients[clientId];
+            var clientData = usageNow.clients[clientId];
             return {
             id: clientId,
             name: clientData.name,
@@ -157,6 +160,26 @@ Item {
         });
 
         return sortedClients.slice(count);
+    }
+
+    function getIcon(usageNow, usageThreshold=20) {
+
+        var busy3d = usageNow.engines['Render/3D/0'].busy
+        var busyVideo = usageNow.engines['Video/0'].busy
+        var busyVideoEnhance = usageNow.engines['VideoEnhance/0'].busy
+        var busyBlitter = usageNow.engines['Blitter/0'].busy
+
+        if (busyVideoEnhance > usageThreshold) {
+            return "icon-hwe"
+        } else if (busyVideo > usageThreshold) {
+            return "icon-hw"
+        } else if (busyBlitter > usageThreshold) {
+            return "icon-blitter"
+        } else if (busy3d > usageThreshold) {
+            return "icon-3d"
+        } else {
+            return "icon-idle"
+        }
     }
 
     MouseArea {
