@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
-project("plasmoid-intel-gpu-top")
+project("plasmoid-intel-gpu-monitor")
 option(INSTALL_PLASMOID "Install the plasmoid" ON)
 # Use Extra CMake Modules (ECM) for common functionality.
 # See http://api.kde.org/ecm/manual/ecm.7.html

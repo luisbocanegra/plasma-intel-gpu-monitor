@@ -6,16 +6,16 @@
                 "Name": "Luis Bocanegra"
             }
         ],
-        "BugReportUrl": "https://github.com/luisbocanegra/plasma-intel-gpu-top/issues",
+        "BugReportUrl": "https://github.com/luisbocanegra/plasma-intel-gpu-monitor/issues",
         "Category": "System Information",
-        "Description": "Display Intel GPU stats including wether or not video acceleration is being used",
-        "Id": "luisbocanegra.intel-gpu-top",
+        "Description": "Performance & accelerated video decoding monitor",
+        "Id": "luisbocanegra.intel.gpu.monitor",
         "EnabledByDefault": "true",
         "Icon":"show-gpu-effects",
         "License": "GPL-3.0",
-        "Name": "Intel GPU Top",
+        "Name": "Intel GPU Monitor",
         "Version": "0.1.0",
-        "Website": "https://github.com/luisbocanegra/plasma-intel-gpu-top"
+        "Website": "https://github.com/luisbocanegra/plasma-intel-gpu-monitor"
     },
     "KPackageStructure": "Plasma/Applet",
     "X-Plasma-API": "declarativeappletscript",
