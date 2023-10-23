@@ -196,6 +196,38 @@ ColumnLayout {
                                 // opacity: .7
                             }
                         }
+
+                        Loader {
+                            sourceComponent: dividerComponent
+                        }
+
+                        RowLayout {
+                            PlasmaComponents3.Label {
+                                text: "IMC Reads";
+                                opacity: 1
+                            }
+                            Item { Layout.fillWidth: true }
+                            PlasmaComponents3.Label {
+                                text: truncateNumber(usageNow["imc-bandwidth"].reads)+' '+usageNow["imc-bandwidth"].unit;
+                                // opacity: .7
+                            }
+                        }
+
+                        Loader {
+                            sourceComponent: dividerComponent
+                        }
+
+                        RowLayout {
+                            PlasmaComponents3.Label {
+                                text: "IMC Writes";
+                                opacity: 1
+                            }
+                            Item { Layout.fillWidth: true }
+                            PlasmaComponents3.Label {
+                                text: truncateNumber(usageNow["imc-bandwidth"].writes)+' '+usageNow["imc-bandwidth"].unit;
+                                // opacity: .7
+                            }
+                        }
                         
                         // ---------------------------------------------------------
 
