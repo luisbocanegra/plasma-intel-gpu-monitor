@@ -29,7 +29,6 @@ Item {
                 width: PlasmaCore.Units.gridUnit * 10
                 usageNow: root.usageNow
             }
-            visible: true
         }
     }
 
@@ -46,12 +45,7 @@ Item {
 
     property string statsString: ""
     
-    // for file in /sys/block/*; do if [[ $(cat "${file}/removable") -eq 1 ]]; then; echo "$file $(cat ${file}/stat) $(cat ${file}/device/vendor) $(cat ${file}/device/model)"; fi; done
     property string statsCommand: "timeout 1.5s intel_gpu_top -d drm:/dev/dri/card1 -J -s 500"
-    //property string statsCommand: "for file in /sys/block/*; do echo \"$file $(cat ${file}/stat) $(cat ${file}/device/vendor) $(cat ${file}/device/model)\"; done"
-
-    // Plasmoid.fullRepresentation: FullRepresentation {
-    // }
 
     PlasmaCore.DataSource {
         id: getStats
@@ -191,7 +185,7 @@ Item {
 
     Timer {
         interval: 2000;
-        running: true;//autoReloadEnabled
+        running: true;
         repeat: true;
         onTriggered: {
             getStats.exec(statsCommand);
