@@ -256,7 +256,7 @@ ColumnLayout {
                                     }
                                     Item { Layout.fillWidth: true }
                                     PlasmaComponents3.Label {
-                                        text: truncateNumber(usageNow.engines["Render/3D/0"].busy)+' '+usageNow.engines["Render/3D/0"].unit;
+                                        text: truncateNumber(usageNow.engines["Render/3D"].busy)+' '+usageNow.engines["Render/3D"].unit;
                                         // opacity: .7
                                     }
                                 }
@@ -277,7 +277,7 @@ ColumnLayout {
                                     }
                                     Item { Layout.fillWidth: true }
                                     PlasmaComponents3.Label {
-                                        text: truncateNumber(usageNow.engines["Video/0"].busy)+' '+usageNow.engines["Video/0"].unit;
+                                        text: truncateNumber(usageNow.engines["Video"].busy)+' '+usageNow.engines["Video"].unit;
                                         // opacity: .7
                                     }
                                 }
@@ -298,7 +298,7 @@ ColumnLayout {
                                     }
                                     Item { Layout.fillWidth: true }
                                     PlasmaComponents3.Label {
-                                        text: truncateNumber(usageNow.engines["VideoEnhance/0"].busy)+' '+usageNow.engines["VideoEnhance/0"].unit;
+                                        text: truncateNumber(usageNow.engines["VideoEnhance"].busy)+' '+usageNow.engines["VideoEnhance"].unit;
                                         // opacity: .7
                                     }
                                 }
@@ -319,7 +319,7 @@ ColumnLayout {
                                     }
                                     Item { Layout.fillWidth: true }
                                     PlasmaComponents3.Label {
-                                        text: truncateNumber(usageNow.engines["Blitter/0"].busy)+' '+usageNow.engines["Blitter/0"].unit;
+                                        text: truncateNumber(usageNow.engines["Blitter"].busy)+' '+usageNow.engines["Blitter"].unit;
                                         // opacity: .7
                                     }
                                 }

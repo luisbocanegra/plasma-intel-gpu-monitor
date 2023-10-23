@@ -74,6 +74,7 @@ Item {
         function onExited(cmd, exitCode, exitStatus, stdout, stderr) {
             statsString = stdout.trim();
             usageNow = getCurrentUsage(statsString);
+            renameEngines(usageNow.engines);
             clients3d = getSortedClients(usageNow,'Render/3D')
             clientsVideo = getSortedClients(usageNow,'Video')
             clientsVideoEnhance = getSortedClients(usageNow,'VideoEnhance')
@@ -133,6 +134,25 @@ Item {
         }
     }
 
+    // convert pysical engines to classes (removes /NUMBER at the end)
+    function renameEngines(obj) {
+        for (let key in obj) {
+            if (obj.hasOwnProperty(key)) {
+                
+                let parts = key.split("/")
+
+                if ( !isNaN(Number(parts[parts.length-1])) ) {
+                    let newKey = key.split("/")
+                    newKey.pop()
+                    newKey = newKey.join("/")
+
+                    obj[newKey] = obj[key];
+                    delete obj[key];
+                }
+            }
+        }
+    }
+
     function getSortedClients(usageNow, engineClass, count=-5) {
 
         // Filter out clients based on 'busy' value of the specified engine class
@@ -160,10 +180,10 @@ Item {
 
     function getIcon(usageNow, usageThreshold=5) {
 
-        var busy3d = usageNow.engines['Render/3D/0'].busy
-        var busyVideo = usageNow.engines['Video/0'].busy
-        var busyVideoEnhance = usageNow.engines['VideoEnhance/0'].busy
-        var busyBlitter = usageNow.engines['Blitter/0'].busy
+        var busy3d = usageNow.engines['Render/3D'].busy
+        var busyVideo = usageNow.engines['Video'].busy
+        var busyVideoEnhance = usageNow.engines['VideoEnhance'].busy
+        var busyBlitter = usageNow.engines['Blitter'].busy
 
         if (busyVideoEnhance > usageThreshold) {
             return "icon-hwe"
