@@ -7,6 +7,7 @@ import org.kde.kirigami 2.20 as Kirigami
 import Qt.labs.settings 1.0
 import "components" as Components
 ColumnLayout {
+    // FIXME Make this customize every engine icon, disabled for now
     id:root
     signal configurationChanged
     anchors.fill: parent
