@@ -13,6 +13,7 @@ Item {
                                     Plasmoid.fullRepresentation :
                                     Plasmoid.compactRepresentation
 
+    property var cardsList: []
     property var usageNow: {}
     property var usageLast: {}
     property var clients3d: []
@@ -47,6 +48,10 @@ Item {
     
     property string statsCommand: "timeout 1.5s intel_gpu_top -d drm:/dev/dri/card1 -J -s 500"
 
+    property string getCardsCommand: "intel_gpu_top -L"
+
+    property string cardsString: ""
+
     PlasmaCore.DataSource {
         id: getStats
         engine: "executable"
@@ -68,7 +73,6 @@ Item {
         signal exited(string cmd, int exitCode, int exitStatus, string stdout, string stderr)
     }
 
-
     Connections {
         target: getStats
         function onExited(cmd, exitCode, exitStatus, stdout, stderr) {
@@ -79,6 +83,36 @@ Item {
             clientsVideo = getSortedClients(usageNow,'Video')
             clientsVideoEnhance = getSortedClients(usageNow,'VideoEnhance')
             engineIcon = getIcon(usageNow)
+        }
+    }
+
+
+    PlasmaCore.DataSource {
+        id: getCards
+        engine: "executable"
+        connectedSources: []
+
+        onNewData: {
+            var exitCode = data["exit code"]
+            var exitStatus = data["exit status"]
+            var stdout = data["stdout"]
+            var stderr = data["stderr"]
+            exited(sourceName, exitCode, exitStatus, stdout, stderr)
+            disconnectSource(sourceName) // cmd finished
+        }
+
+        function exec(cmd) {
+            getCards.connectSource(cmd)
+        }
+
+        signal exited(string cmd, int exitCode, int exitStatus, string stdout, string stderr)
+    }
+
+    Connections {
+        target: getCards
+        function onExited(cmd, exitCode, exitStatus, stdout, stderr) {
+            cardsString = stdout.trim();
+            cardsList = getCardsList(cardsString)
         }
     }
 
@@ -198,9 +232,41 @@ Item {
         }
     }
 
+    function getCardsList(cardsString) {
+        var lines = cardsString.split("\n")
+        console.log(lines);
+
+        var devices = []
+
+        lines.forEach((line) => {
+            if (line.startsWith("card")) {
+                var parts = line.split(/\s+/);
+                var device = {}
+                device.dri = parts[0]
+                device.name = parts.slice(1, -1).join(" ")
+                device.ids = {}
+
+                var partsId = parts[parts.length - 1].split(":")[1].split(",")
+
+                partsId.forEach((identifier) => {
+                    var parts = identifier.split("=")
+                    device.ids[parts[0]] = parts[1]
+                })
+
+                devices.push(device)
+            }
+        });
+
+        return devices
+    }
+
     MouseArea {
         anchors.fill: parent
         hoverEnabled: true
+    }
+
+    Component.onCompleted: {
+        getCards.exec(getCardsCommand);
     }
 
     Timer {
