@@ -18,10 +18,10 @@ Item {
         svg: PlasmaCore.Svg {
             id: svg
             colorGroup: PlasmaCore.ColorScope.colorGroup
-            imagePath: Qt.resolvedUrl("../../icons/"+(engineIcon!=""?engineIcon:'state-unknown')+".svg")
+            imagePath: Qt.resolvedUrl("../../icons/"+(engineIcon!==undefined?engineIcon:'state-unknown')+".svg")
         }
         // TODO: change those ids to something generic
-        elementId: "22-22-material-you"
+        // elementId: "22-22-material-you"
     }
 
     // PlasmaCore.IconItem {

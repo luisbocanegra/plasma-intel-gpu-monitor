@@ -17,6 +17,8 @@ Item {
     property var usageLast: {}
     property var clients3d: []
     property var clientsVideo: []
+    property var clientsVideoEnhance: []
+    property var clientsBlitter: []
     property var engineIcon
 
     Plasmoid.compactRepresentation: CompactRepresentation {
@@ -26,16 +28,18 @@ Item {
             mainItem: Tooltip {
                 width: PlasmaCore.Units.gridUnit * 10
                 usageNow: root.usageNow
-                clients3d: root.clients3d
-                clientsVideo: root.clientsVideo
             }
             visible: true
         }
     }
 
-    // Plasmoid.fullRepresentation: FullRepresentation {
-    //     usageNow: root.usageNow
-    // }
+    Plasmoid.fullRepresentation: FullRepresentation {
+        usageNow: root.usageNow
+        clients3d: root.clients3d
+        clientsVideo: root.clientsVideo
+        clientsVideoEnhance: root.clientsVideoEnhance
+        clientsBlitter: root.clientsBlitter
+    }
 
     // Plasmoid.status: //usageNow.length>0 ? PlasmaCore.Types.ActiveStatus : PlasmaCore.Types.HiddenStatus
     // Plasmoid.busy: true
@@ -74,15 +78,11 @@ Item {
     Connections {
         target: getStats
         function onExited(cmd, exitCode, exitStatus, stdout, stderr) {
-            //console.log("CHECK STATS");
-            //console.log("cmd:",cmd);
-            //console.log("exitCode:",exitCode);
-            //console.log("stdout:",stdout);
-            //console.log("stderr:",stderr);
-            statsString = stdout.trim(); //.replace('\n', '')
+            statsString = stdout.trim();
             usageNow = getCurrentUsage(statsString);
             clients3d = getSortedClients(usageNow,'Render/3D')
             clientsVideo = getSortedClients(usageNow,'Video')
+            clientsVideoEnhance = getSortedClients(usageNow,'VideoEnhance')
             engineIcon = getIcon(usageNow)
         }
     }
@@ -125,19 +125,21 @@ Item {
 
         if (goodObjects.length>1) {
             var stats = goodObjects[goodObjects.length -1];
+            usageLast = stats
+            return stats
 
-            if (stats.frequency.actual != 0) {
-                usageLast = stats
-                return stats
-            } else {
-                return usageLast
-            }
+            // if (stats.frequency.actual != 0) {
+            //     usageLast = stats
+            //     return stats
+            // } else {
+            //     return usageLast
+            // }
         } else {
             return usageLast
         }
     }
 
-    function getSortedClients(usageNow, engineClass, count=-3) {
+    function getSortedClients(usageNow, engineClass, count=-5) {
 
         // Filter out clients based on 'busy' value of the specified engine class
         var filteredClients = Object.keys(usageNow.clients).filter(function (clientId) {
@@ -162,7 +164,7 @@ Item {
         return sortedClients.slice(count);
     }
 
-    function getIcon(usageNow, usageThreshold=20) {
+    function getIcon(usageNow, usageThreshold=5) {
 
         var busy3d = usageNow.engines['Render/3D/0'].busy
         var busyVideo = usageNow.engines['Video/0'].busy

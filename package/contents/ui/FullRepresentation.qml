@@ -23,10 +23,15 @@ ColumnLayout {
     property bool onDesktop: plasmoid.location === PlasmaCore.Types.Floating
     property bool plasmoidExpanded: plasmoid.expanded
     property bool autoReloadEnabled: onDesktop || plasmoidExpanded
-    property var dividerColor: Kirigami.Theme.textColor
-    property var dividerOpacity: 0.1
 
-    property var busyList;
+    property var usageNow;
+    property var clients3d;
+    property var clientsVideo;
+    property var clientsVideoEnhance;
+    property var clientsBlitter;
+    property var dividerColor: Kirigami.Theme.textColor;
+    property var dividerOpacity: 0.12;
+
 
     function truncateString(str, n) {
         if (str.length > n) {
@@ -34,6 +39,11 @@ ColumnLayout {
         } else {
             return str;
         }
+    }
+
+    function truncateNumber(number, decimals = 2) {
+        var factor = Math.pow(10, decimals);
+        return Math.floor(number * factor) / factor;
     }
 
     PlasmaExtras.Representation {
@@ -100,14 +110,13 @@ ColumnLayout {
             id: rootContent
             anchors.fill: parent
 
-            RowLayout {
-
-                Item { implicitWidth: PlasmaCore.Units.gridUnit / 2}
-                PlasmaComponents3.Label {
-                    text: "Files are still being transferred...";
-                    opacity: .7
-                }
-            }
+            // RowLayout {
+            //     Item { implicitWidth: PlasmaCore.Units.gridUnit / 2}
+            //     PlasmaComponents3.Label {
+            //         text: "Files are still being transferred...";
+            //         opacity: .7
+            //     }
+            // }
 
             PlasmaComponents3.ScrollView {
                 id: scrollView
@@ -133,7 +142,7 @@ ColumnLayout {
                     rightMargin: sideMargin
                     boundsBehavior: Flickable.StopAtBounds
                     clip: true
-                    model: busyList
+                    model: 1
                     // width: rootContent.width
 
                     delegate: ColumnLayout {
@@ -141,32 +150,190 @@ ColumnLayout {
                         anchors.left: parent.left
                         anchors.right: parent.right
 
-                        Rectangle {
-                            Layout.preferredWidth: mainLayout.width
-                            height: 1
-                            color: dividerColor
-                            opacity: dividerOpacity
+                        Component {
+                            id: dividerComponent
+                            Item {
+                                width: mainLayout.width
+                                Rectangle {
+                                    width: parent.width
+                                    height: 1
+                                    color: root.dividerColor
+                                    opacity: root.dividerOpacity
+                                }
+                            }
+                        }
+
+                        PlasmaExtras.Heading {
+                            level: 3
+                            text: "Usage";
+                            Layout.alignment: Qt.AlignHCenter
                         }
 
                         RowLayout {
-                            Layout.preferredWidth: mainLayout.width
-                            ColumnLayout {
-                                PlasmaComponents3.Label {
-                                    text: truncateString(modelData.deviceName,30);
-                                    opacity: 1
-                                }
-                                PlasmaComponents3.Label {
-                                    text: truncateString(modelData.blockName,30);
-                                    opacity: .7
-                                }
+                            PlasmaComponents3.Label {
+                                text: "Load";
+                                opacity: 1
                             }
                             Item { Layout.fillWidth: true }
                             PlasmaComponents3.Label {
-                                text: "In flight: " + modelData.inFlight;
-                                opacity: .7
-                                //color: Kirigami.Theme.neutralTextColor
+                                text: truncateNumber(100-root.usageNow.rc6.value)+' '+root.usageNow.rc6.unit;
+                                // opacity: .7
                             }
                         }
+
+                        Loader {
+                            sourceComponent: dividerComponent
+                        }
+
+                        RowLayout {
+                            PlasmaComponents3.Label {
+                                text: "Frequency";
+                                opacity: 1
+                            }
+                            Item { Layout.fillWidth: true }
+                            PlasmaComponents3.Label {
+                                text: truncateNumber(usageNow.frequency.actual)+' '+usageNow.frequency.unit;
+                                // opacity: .7
+                            }
+                        }
+                        
+                        // ---------------------------------------------------------
+
+                        
+
+                        // ---------------------------------------------------------
+
+                        PlasmaExtras.Heading {
+                            level: 3
+                            text: "Power";
+                            Layout.alignment: Qt.AlignHCenter
+                        }
+
+                        RowLayout {
+                            PlasmaComponents3.Label {
+                                text: "GPU";
+                                opacity: 1
+                            }
+                            Item { Layout.fillWidth: true }
+                            PlasmaComponents3.Label {
+                                text: truncateNumber(usageNow.power.GPU)+' '+usageNow.power.unit;
+                                // opacity: .7
+                            }
+                        }
+
+                        Loader {
+                            sourceComponent: dividerComponent
+                        }
+
+                        RowLayout {
+                            PlasmaComponents3.Label {
+                                text: "Package";
+                                opacity: 1
+                            }
+                            Item { Layout.fillWidth: true }
+                            PlasmaComponents3.Label {
+                                text: truncateNumber(usageNow.power.Package)+' '+usageNow.power.unit;
+                                // opacity: .7
+                            }
+                        }
+                        
+
+                        PlasmaExtras.Heading {
+                            level: 3
+                            text: "Engine Utilization";
+                            Layout.alignment: Qt.AlignHCenter
+                        }
+
+                        // *****************************************************************
+
+                        ColumnLayout {
+                            spacing: 5
+                            ColumnLayout {
+                                RowLayout {
+                                    PlasmaComponents3.Label {
+                                        text: "Render/3D";
+                                        opacity: 1
+                                    }
+                                    Item { Layout.fillWidth: true }
+                                    PlasmaComponents3.Label {
+                                        text: truncateNumber(usageNow.engines["Render/3D/0"].busy)+' '+usageNow.engines["Render/3D/0"].unit;
+                                        // opacity: .7
+                                    }
+                                }
+
+                                Components.ClientsList {
+                                    clientsList: clients3d
+                                    engineName: 'Render/3D'
+                                }
+                            }
+
+                            Loader { sourceComponent: dividerComponent }
+
+                            ColumnLayout {
+                                RowLayout {
+                                    PlasmaComponents3.Label {
+                                        text: "Video";
+                                        opacity: 1
+                                    }
+                                    Item { Layout.fillWidth: true }
+                                    PlasmaComponents3.Label {
+                                        text: truncateNumber(usageNow.engines["Video/0"].busy)+' '+usageNow.engines["Video/0"].unit;
+                                        // opacity: .7
+                                    }
+                                }
+
+                                Components.ClientsList {
+                                    clientsList: clientsVideo
+                                    engineName: 'Video'
+                                }
+                            }
+
+                            Loader { sourceComponent: dividerComponent }
+
+                            ColumnLayout {
+                                RowLayout {
+                                    PlasmaComponents3.Label {
+                                        text: "Video Enhance";
+                                        opacity: 1
+                                    }
+                                    Item { Layout.fillWidth: true }
+                                    PlasmaComponents3.Label {
+                                        text: truncateNumber(usageNow.engines["VideoEnhance/0"].busy)+' '+usageNow.engines["VideoEnhance/0"].unit;
+                                        // opacity: .7
+                                    }
+                                }
+
+                                Components.ClientsList {
+                                    clientsList: clientsVideoEnhance
+                                    engineName: 'VideoEnhance'
+                                }
+                            }
+
+                            Loader { sourceComponent: dividerComponent }
+
+                            ColumnLayout {
+                                RowLayout {
+                                    PlasmaComponents3.Label {
+                                        text: "Blitter";
+                                        opacity: 1
+                                    }
+                                    Item { Layout.fillWidth: true }
+                                    PlasmaComponents3.Label {
+                                        text: truncateNumber(usageNow.engines["Blitter/0"].busy)+' '+usageNow.engines["Blitter/0"].unit;
+                                        // opacity: .7
+                                    }
+                                }
+
+                                Components.ClientsList {
+                                    clientsList: clientsBlitter
+                                    engineName: 'Blitter'
+                                }
+                            }
+
+
+                        }
+
+                        // *****************************************************************
                     }
                 }
             }

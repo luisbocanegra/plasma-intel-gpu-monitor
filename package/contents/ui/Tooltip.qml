@@ -9,8 +9,6 @@ import org.kde.plasma.plasmoid 2.0
 ColumnLayout {
     id: root;
     property var usageNow;
-    property var clients3d;
-    property var clientsVideo;
     property var dividerColor: Kirigami.Theme.textColor;
     property var dividerOpacity: 0.1;
 
@@ -33,6 +31,7 @@ ColumnLayout {
         Layout.leftMargin: PlasmaCore.Units.gridUnit / 2
         Layout.bottomMargin: PlasmaCore.Units.gridUnit / 2
         Layout.rightMargin: PlasmaCore.Units.gridUnit / 2
+        Layout.preferredWidth: PlasmaCore.Units.gridUnit * 50
 
         PlasmaExtras.Heading {
             id: tooltipMaintext
@@ -73,6 +72,28 @@ ColumnLayout {
 
             // ---------------------------------------------------------
 
+            PlasmaExtras.Heading {
+                level: 3
+                text: "Usage";
+                Layout.alignment: Qt.AlignHCenter
+            }
+
+            RowLayout {
+                PlasmaComponents3.Label {
+                    text: "Load";
+                    opacity: 1
+                }
+                Item { Layout.fillWidth: true }
+                PlasmaComponents3.Label {
+                    text: truncateNumber(100-usageNow.rc6.value)+' '+usageNow.rc6.unit;
+                    opacity: .7
+                }
+            }
+
+            Loader {
+                sourceComponent: dividerComponent
+            }
+
             RowLayout {
                 PlasmaComponents3.Label {
                     text: "Frequency";
@@ -84,24 +105,10 @@ ColumnLayout {
                     opacity: .7
                 }
             }
-
-            Loader {
-                sourceComponent: dividerComponent
-            }
             
             // ---------------------------------------------------------
 
-            RowLayout {
-                PlasmaComponents3.Label {
-                    text: "RC6";
-                    opacity: 1
-                }
-                Item { Layout.fillWidth: true }
-                PlasmaComponents3.Label {
-                    text: truncateNumber(usageNow.rc6.value)+' '+usageNow.rc6.unit;
-                    opacity: .7
-                }
-            }
+            
 
             // ---------------------------------------------------------
 
@@ -143,7 +150,7 @@ ColumnLayout {
 
             PlasmaExtras.Heading {
                 level: 3
-                text: "Engines";
+                text: "Engine Utilization";
                 Layout.alignment: Qt.AlignHCenter
             }
 
@@ -158,40 +165,6 @@ ColumnLayout {
                     opacity: .7
                 }
             }
-
-            // *****************************************************************
-
-            Repeater {
-                model: clients3d
-                delegate: ColumnLayout {
-
-                    Loader {
-                        sourceComponent: dividerComponent
-                    }
-
-                    RowLayout {
-                        Item { implicitWidth: units.smallSpacing }
-                        ColumnLayout {
-                                    PlasmaComponents3.Label {
-                                        text: truncateString(modelData.name,30);
-                                        opacity: 1
-                                    }
-                                    PlasmaComponents3.Label {
-                                        text: truncateString(modelData.pid,30);
-                                        opacity: .7
-                                    }
-                                }
-                        //Item { implicitWidth: units.smallSpacing }
-                        Item { Layout.fillWidth: true }
-                        PlasmaComponents3.Label {
-                            text: truncateNumber(modelData.engines['Render/3D'].busy)+' '+modelData.engines['Render/3D'].unit;
-                            opacity: .7
-                        }
-                    }
-                }
-            }
-
-            // *****************************************************************
 
             Loader {
                 sourceComponent: dividerComponent
@@ -224,40 +197,6 @@ ColumnLayout {
                     opacity: .7
                 }
             }
-
-            // *****************************************************************
-
-            Repeater {
-                model: clientsVideo
-                delegate: ColumnLayout {
-
-                    Loader {
-                        sourceComponent: dividerComponent
-                    }
-
-                    RowLayout {
-                        Item { implicitWidth: units.smallSpacing }
-                        ColumnLayout {
-                                    PlasmaComponents3.Label {
-                                        text: truncateString(modelData.name,30);
-                                        opacity: 1
-                                    }
-                                    PlasmaComponents3.Label {
-                                        text: truncateString(modelData.pid,30);
-                                        opacity: .7
-                                    }
-                                }
-                        //Item { implicitWidth: units.smallSpacing }
-                        Item { Layout.fillWidth: true }
-                        PlasmaComponents3.Label {
-                            text: truncateNumber(modelData.engines['Video'].busy)+' '+modelData.engines['Video'].unit;
-                            opacity: .7
-                        }
-                    }
-                }
-            }
-
-            // *****************************************************************
             
             Loader {
                 sourceComponent: dividerComponent
@@ -265,7 +204,7 @@ ColumnLayout {
 
             RowLayout {
                 PlasmaComponents3.Label {
-                    text: "VideoEnhance";
+                    text: "Video Enhance";
                     opacity: 1
                 }
                 Item { Layout.fillWidth: true }
