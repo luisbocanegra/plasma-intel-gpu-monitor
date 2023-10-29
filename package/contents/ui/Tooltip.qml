@@ -188,7 +188,7 @@ ColumnLayout {
 
             RowLayout {
                 PlasmaComponents3.Label {
-                    text: "Video";
+                    text: "Video Acceleration";
                     opacity: 1
                 }
                 Item { Layout.fillWidth: true }

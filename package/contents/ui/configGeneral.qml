@@ -171,7 +171,7 @@ ColumnLayout {
 
         SpinBox {
             id: thresholdVideo
-            Kirigami.FormData.label: "Video:"
+            Kirigami.FormData.label: "Video Acceleration:"
             from: 0
             to: 100
         }
