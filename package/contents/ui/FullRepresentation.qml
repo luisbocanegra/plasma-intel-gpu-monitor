@@ -163,6 +163,11 @@ ColumnLayout {
                             }
                         }
 
+                        PlasmaComponents3.Label {
+                            text: plasmoid.configuration.card.split(",")[1];
+                            opacity: .7
+                        }
+
                         PlasmaExtras.Heading {
                             level: 3
                             text: "Usage";

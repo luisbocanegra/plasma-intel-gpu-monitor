@@ -51,26 +51,10 @@ ColumnLayout {
         }
 
         ColumnLayout {
-
-            // ---------------------------------------------------------
-
-            // RowLayout {
-            //     PlasmaComponents3.Label {
-            //         text: "Period";
-            //         opacity: 1
-            //     }
-            //     Item { Layout.fillWidth: true }
-            //     PlasmaComponents3.Label {
-            //         text: truncateString(usageNow.period.duration)+' '+usageNow.period.unit;
-            //         opacity: .7
-            //     }
-            // }
-
-            // Loader {
-            //     sourceComponent: dividerComponent
-            // }
-
-            // ---------------------------------------------------------
+            PlasmaComponents3.Label {
+                text: plasmoid.configuration.card.split(",")[1];
+                opacity: .7
+            }
 
             PlasmaExtras.Heading {
                 level: 3
