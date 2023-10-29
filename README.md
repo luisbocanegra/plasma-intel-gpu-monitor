@@ -47,10 +47,10 @@ Plasma Widget that displays Intel GPU usage including wether or not video accele
   * [x] Load, Frequency, Power consumption
   * [x] Usage per engine (`Render/3D`, `Video & VideoEnhance`, `Blitter`)
 * [x] Show top clients (program names) per engine
-  * [ ] Custom max clients (program names) to show in engine utilization
-* [ ] GPU selection
+  * [x] Custom max clients (program names) to show in engine utilization
+* [x] GPU selection
 * [ ] Custom icon support
-* [ ] Custom engine utilization threshold to update icons
+* [x] Custom engine utilization threshold to update icons
 
 ## Installing
 
