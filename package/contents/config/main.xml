@@ -6,5 +6,8 @@
       <entry name="card" type="String">
         <default></default>
       </entry>
+      <entry name="max_clients" type="Int">
+        <default>3</default>
+      </entry>
     </group>
 </kcfg>

@@ -21,6 +21,7 @@ Item {
     property var clientsBlitter: []
     property var engineIcon
     property var card: plasmoid.configuration.card
+    property int maxClients: plasmoid.configuration.max_clients
 
     Plasmoid.compactRepresentation: CompactRepresentation {
         engineIcon: root.engineIcon
@@ -152,7 +153,7 @@ Item {
         }
     }
 
-    function getSortedClients(usageNow, engineClass, count=-5) {
+    function getSortedClients(usageNow, engineClass, count=-maxClients) {
 
         // Filter out clients based on 'busy' value of the specified engine class
         var filteredClients = Object.keys(usageNow.clients).filter(function (clientId) {

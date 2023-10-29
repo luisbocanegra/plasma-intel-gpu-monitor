@@ -10,11 +10,10 @@ ColumnLayout {
     
     id:root
     anchors.fill: parent
-    // property string cfg_icon: plasmoid.configuration.icon
-    // property string defaultIconName: ""
-    // property alias configValue: cardCombo.configValue
-    // property alias cfg_card: cardCombo.currentIndex || 0
-    property string cfg_card: "card1"//plasmoid.configuration.card
+    property var textAreaPadding: 10 * PlasmaCore.Units.devicePixelRatio
+    property var controlWidth: 48 * PlasmaCore.Units.devicePixelRatio
+    property string cfg_card: "" //plasmoid.configuration.card
+    property alias cfg_max_clients: maxClients.text
     signal configurationChanged
 
     property var cardsList: []
@@ -124,6 +123,27 @@ ColumnLayout {
 
             onTriggered: {
                 myLoader.sourceComponent = comboBoxComponent
+            }
+        }
+
+        TextField {
+            id: maxClients
+            // Layout.preferredWidth: controlWidth
+            Kirigami.FormData.label: "Max shown programs:"
+            topPadding: textAreaPadding
+            bottomPadding: textAreaPadding
+            leftPadding: textAreaPadding
+            rightPadding: textAreaPadding
+            placeholderText: "0-?"
+            horizontalAlignment: TextInput.AlignHCenter
+            text: parseInt(plasmoid.configuration.max_clients)
+            // Layout.fillWidth: true
+            validator: IntValidator {
+                bottom: 0
+            }
+
+            onAccepted: {
+                cfg_max_clients = parseInt(text)
             }
         }
     }
