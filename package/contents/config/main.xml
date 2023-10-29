@@ -3,8 +3,8 @@
     <kcfgfile name=""/>
 
     <group name="General">
-        <entry name="icon" type="String">
-          <default></default>
+      <entry name="card" type="String">
+        <default></default>
       </entry>
     </group>
 </kcfg>

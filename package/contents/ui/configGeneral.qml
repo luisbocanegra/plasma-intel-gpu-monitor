@@ -7,75 +7,123 @@ import org.kde.kirigami 2.20 as Kirigami
 import Qt.labs.settings 1.0
 import "components" as Components
 ColumnLayout {
-    // FIXME Make this customize every engine icon, disabled for now
+    
     id:root
-    signal configurationChanged
     anchors.fill: parent
-    property string cfg_icon: plasmoid.configuration.icon
-    property string defaultIconName: ""
-    ColumnLayout {
+    // property string cfg_icon: plasmoid.configuration.icon
+    // property string defaultIconName: ""
+    // property alias configValue: cardCombo.configValue
+    // property alias cfg_card: cardCombo.currentIndex || 0
+    property string cfg_card: "card1"//plasmoid.configuration.card
+    signal configurationChanged
+
+    property var cardsList: []
+    property string getCardsCommand: "intel_gpu_top -L"
+    property string cardsString: ""
+
+
+    PlasmaCore.DataSource {
+        id: getCards
+        engine: "executable"
+        connectedSources: []
+
+        onNewData: {
+            var exitCode = data["exit code"]
+            var exitStatus = data["exit status"]
+            var stdout = data["stdout"]
+            var stderr = data["stderr"]
+            exited(sourceName, exitCode, exitStatus, stdout, stderr)
+            disconnectSource(sourceName) // cmd finished
+        }
+
+        function exec(cmd) {
+            getCards.connectSource(cmd)
+        }
+
+        signal exited(string cmd, int exitCode, int exitStatus, string stdout, string stderr)
+    }
+
+    Connections {
+        target: getCards
+        function onExited(cmd, exitCode, exitStatus, stdout, stderr) {
+            cardsString = stdout.trim();
+            cardsList = getCardsList(cardsString)
+        }
+    }
+
+    function getCardsList(cardsString) {
+
+        var lines = cardsString.split("\n")
+
+        var devices = []
+
+        lines.forEach((line) => {
+            if (line.startsWith("card")) {
+                var parts = line.split(/\s+/);
+                var device = {}
+                device.dri = parts[0]
+                device.name = parts.slice(1, -1).join(" ")
+                device.ids = {}
+
+                var partsId = parts[parts.length - 1].split(":")[1].split(",")
+
+                partsId.forEach((identifier) => {
+                    var parts = identifier.split("=")
+                    device.ids[parts[0]] = parts[1]
+                })
+
+                device.label = "/dev/dri/" + device.dri + " "+ device.name + " " + device.ids.vendor + ":"+device.ids.device + " (card "+device.ids.card+")"
+                devices.push(device)
+            }
+        });
+
+        return devices
+    }
+
+    Component.onCompleted: {
+        getCards.exec(getCardsCommand);
+        // console.log("aaaaaaaaaaaaaaaaaaaaaaaa");
+        // startupTimer.start()
+    }
+
+    property var myDataArray: []
+
+    Kirigami.FormLayout {
+        id: generalPage
         Layout.alignment: Qt.AlignTop
 
-        RowLayout {
-            Label {
-                text: "Icon:"
+
+        // Make card selection a component so we can load after cardsList is ready
+        Loader {
+            id: myLoader
+            asynchronous: true
+        }
+
+        Component {
+            id: comboBoxComponent
+            Components.MyComboBox {
+                id: cardCombo
+                model: root.cardsList
+                configName: "card"
+                textRole: "label"
+                formLabel: "Card"
+                onConfigValueChanged: {
+                    cfg_card = configValue
+                }
             }
+        }
 
-            Button {
-                id: iconButton
+        Component.onCompleted: {
+            startupTimer.start()
+        }
+        
+        Timer {
+            id: startupTimer
+            interval: 250
+            repeat: false
 
-                implicitWidth: previewFrame.width + PlasmaCore.Units.smallSpacing * 2
-                implicitHeight: previewFrame.height + PlasmaCore.Units.smallSpacing * 2
-                hoverEnabled: true
-
-                Accessible.name: i18nc("@action:button", "Change Application Launcher's icon")
-                Accessible.description: i18nc("@info:whatsthis", "Current icon is %1. Click to open menu to change the current icon or reset to the default icon.", cfg_icon)
-                Accessible.role: Accessible.ButtonMenu
-
-                ToolTip.delay: Kirigami.Units.toolTipDelay
-                ToolTip.text: i18nc("@info:tooltip", "Icon name is \"%1\"", cfg_icon)
-                ToolTip.visible: iconButton.hovered && cfg_icon.length > 0
-
-                KQuickAddons.IconDialog {
-                    id: iconDialog
-                    onIconNameChanged: cfg_icon = iconName || defaultIconName
-                }
-
-                onPressed: iconMenu.opened ? iconMenu.close() : iconMenu.open()
-
-                PlasmaCore.FrameSvgItem {
-                    id: previewFrame
-                    anchors.centerIn: parent
-                    imagePath: plasmoid.formFactor === PlasmaCore.Types.Vertical || plasmoid.formFactor === PlasmaCore.Types.Horizontal
-                            ? "widgets/panel-background" : "widgets/background"
-                    width: PlasmaCore.Units.iconSizes.large + fixedMargins.left + fixedMargins.right
-                    height: PlasmaCore.Units.iconSizes.large + fixedMargins.top + fixedMargins.bottom
-
-                    Components.PlasmoidIcon {
-                        width: PlasmaCore.Units.iconSizes.large
-                        customIcon: root.cfg_icon
-                    }
-                }
-
-                Menu {
-                    id: iconMenu
-
-                    // Appear below the button
-                    y: +parent.height
-
-                    MenuItem {
-                        text: i18nc("@item:inmenu Open icon chooser dialog", "Choose…")
-                        icon.name: "document-open-folder"
-                        Accessible.description: i18nc("@info:whatsthis", "Choose an icon for Application Launcher")
-                        onClicked: iconDialog.open()
-                    }
-                    MenuItem {
-                        text: i18nc("@item:inmenu Reset icon to default", "Reset to default icon")
-                        icon.name: "edit-clear"
-                        enabled: cfg_icon !== defaultIconName
-                        onClicked: cfg_icon = defaultIconName
-                    }
-                }
+            onTriggered: {
+                myLoader.sourceComponent = comboBoxComponent
             }
         }
     }
