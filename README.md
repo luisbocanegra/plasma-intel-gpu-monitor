@@ -9,6 +9,12 @@ Plasma Widget that displays Intel GPU usage including wether or not video accele
 <details>
     <summary>More</summary>
 
+Settings
+
+![tooltip](screenshots/settings.png)
+
+Tooltip
+
 ![tooltip](screenshots/tooltip.png)
 
 </details>
