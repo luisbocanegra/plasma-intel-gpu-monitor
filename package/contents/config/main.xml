@@ -9,5 +9,19 @@
       <entry name="max_clients" type="Int">
         <default>3</default>
       </entry>
+
+      <entry name="threshold_3d" type="Int">
+        <default>10</default>
+      </entry>
+      <entry name="threshold_video" type="Int">
+        <default>1</default>
+      </entry>
+      <entry name="threshold_video_enhance" type="Int">
+        <default>1</default>
+      </entry>
+      <entry name="threshold_blitter" type="Int">
+        <default>1</default>
+      </entry>
+
     </group>
 </kcfg>

@@ -12,9 +12,13 @@ ColumnLayout {
     anchors.fill: parent
     property var textAreaPadding: 10 * PlasmaCore.Units.devicePixelRatio
     property var controlWidth: 48 * PlasmaCore.Units.devicePixelRatio
+    signal configurationChanged
     property string cfg_card: "" //plasmoid.configuration.card
     property alias cfg_max_clients: maxClients.text
-    signal configurationChanged
+    property alias cfg_threshold_3d: threshold3d.value
+    property alias cfg_threshold_video: thresholdVideo.value
+    property alias cfg_threshold_video_enhance: thresholdVideoEnhance.value
+    property alias cfg_threshold_blitter: thresholdBlitter.value
 
     property var cardsList: []
     property string getCardsCommand: "intel_gpu_top -L"
@@ -145,6 +149,45 @@ ColumnLayout {
             onAccepted: {
                 cfg_max_clients = parseInt(text)
             }
+        }
+
+        Kirigami.Separator {
+            Kirigami.FormData.label: i18n("Engine icon threshold")
+            Kirigami.FormData.isSection: true
+        }
+
+        Label {
+            text: i18n("Show engine icon when utilization is above the specified thresholds.\nThe priority is the order in which they appear here (descending)")
+            font: Kirigami.Theme.smallFont
+            opacity: 0.7
+        }
+
+        SpinBox {
+            id: thresholdVideoEnhance
+            Kirigami.FormData.label: "Video Enhance:"
+            from: 0
+            to: 100
+        }
+
+        SpinBox {
+            id: thresholdVideo
+            Kirigami.FormData.label: "Video:"
+            from: 0
+            to: 100
+        }
+
+        SpinBox {
+            id: thresholdBlitter
+            Kirigami.FormData.label: "Blitter:"
+            from: 0
+            to: 100
+        }
+
+        SpinBox {
+            id: threshold3d
+            Kirigami.FormData.label: "Render/3D:"
+            from: 0
+            to: 100
         }
     }
 }

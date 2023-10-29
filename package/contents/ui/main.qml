@@ -22,6 +22,10 @@ Item {
     property var engineIcon
     property var card: plasmoid.configuration.card
     property int maxClients: plasmoid.configuration.max_clients
+    property int threshold3d: plasmoid.configuration.threshold_3d
+    property int thresholdVideo: plasmoid.configuration.threshold_video
+    property int thresholdVideoEnhance: plasmoid.configuration.threshold_video_enhance
+    property int thresholdBlitter: plasmoid.configuration.threshold_blitter
 
     Plasmoid.compactRepresentation: CompactRepresentation {
         engineIcon: root.engineIcon
@@ -78,7 +82,7 @@ Item {
             clients3d = getSortedClients(usageNow,'Render/3D')
             clientsVideo = getSortedClients(usageNow,'Video')
             clientsVideoEnhance = getSortedClients(usageNow,'VideoEnhance')
-            engineIcon = getIcon(usageNow)
+            engineIcon = getIcon(usageNow, threshold3d, thresholdVideo, thresholdVideoEnhance, thresholdBlitter)
         }
     }
 
@@ -178,20 +182,20 @@ Item {
         return sortedClients.slice(count);
     }
 
-    function getIcon(usageNow, usageThreshold=5) {
+    function getIcon(usageNow, threshold3d, thresholdVideo, thresholdVideoEnhance, thresholdBlitter) {
 
         var busy3d = usageNow.engines['Render/3D'].busy
         var busyVideo = usageNow.engines['Video'].busy
         var busyVideoEnhance = usageNow.engines['VideoEnhance'].busy
         var busyBlitter = usageNow.engines['Blitter'].busy
 
-        if (busyVideoEnhance > usageThreshold) {
+        if (busyVideoEnhance > thresholdVideoEnhance) {
             return "icon-hwe"
-        } else if (busyVideo > usageThreshold) {
+        } else if (busyVideo > thresholdVideo) {
             return "icon-hw"
-        } else if (busyBlitter > usageThreshold) {
+        } else if (busyBlitter > thresholdBlitter) {
             return "icon-blitter"
-        } else if (busy3d > usageThreshold) {
+        } else if (busy3d > threshold3d) {
             return "icon-3d"
         } else {
             return "icon-idle"
