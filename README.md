@@ -60,7 +60,7 @@ Tooltip
 
 ## Installing
 
-* ~~Install widget from [KDE Store](todo) or use `Get new widgets..`~~ TODO
+* Install from [KDE Store](https://store.kde.org/p/2101680) or use `Get new widgets..`
 
 ### Manual install
 
