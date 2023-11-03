@@ -60,6 +60,7 @@ Tooltip
   * [ ] With badge
   * [x] With color dot
 * [x] Custom engine utilization threshold to update icons
+* [ ] Show intel_gpu_top isn't available or doesn't have perfmon capabilities set
 
 ## Installing
 
