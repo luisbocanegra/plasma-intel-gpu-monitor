@@ -55,7 +55,10 @@ Tooltip
 * [x] Show top clients (program names) per engine
   * [x] Custom max clients (program names) to show in engine utilization
 * [x] GPU selection
-* [ ] Custom icon support
+* [ ] Custom icons support
+* [ ] Show current engine load
+  * [ ] With badge
+  * [x] With color dot
 * [x] Custom engine utilization threshold to update icons
 
 ## Installing
