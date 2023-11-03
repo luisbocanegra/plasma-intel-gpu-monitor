@@ -3,6 +3,7 @@ import org.kde.plasma.core 2.0 as PlasmaCore
 import org.kde.plasma.extras 2.0 as PlasmaExtras
 import org.kde.plasma.plasmoid 2.0
 import org.kde.plasma.components 3.0 as PlasmaComponents3
+import org.kde.kirigami 2.20 as Kirigami
 
 Item {
     id:root
@@ -19,7 +20,12 @@ Item {
     property var clientsVideo: []
     property var clientsVideoEnhance: []
     property var clientsBlitter: []
-    property var engineIcon
+    property var engineIcon: "icon-idle.svg"
+    property color idleColor: Kirigami.ColorUtils.tintWithAlpha(PlasmaCore.Theme.backgroundColor, PlasmaCore.Theme.textColor, .5)
+    property string badgeLightness: Kirigami.ColorUtils.brightnessForColor(PlasmaCore.Theme.backgroundColor) ===
+                                Kirigami.ColorUtils.Dark ?
+                                0.5 : 0.38
+    property color badgeColor: idleColor
     property var card: plasmoid.configuration.card
     property int maxClients: plasmoid.configuration.max_clients
     property int threshold3d: plasmoid.configuration.threshold_3d
@@ -29,6 +35,7 @@ Item {
 
     Plasmoid.compactRepresentation: CompactRepresentation {
         engineIcon: root.engineIcon
+        badgeColor: root.badgeColor
         PlasmaCore.ToolTipArea {
             anchors.fill: parent
             mainItem: Tooltip {
@@ -82,7 +89,9 @@ Item {
             clients3d = getSortedClients(usageNow,'Render/3D')
             clientsVideo = getSortedClients(usageNow,'Video')
             clientsVideoEnhance = getSortedClients(usageNow,'VideoEnhance')
-            engineIcon = getIcon(usageNow, threshold3d, thresholdVideo, thresholdVideoEnhance, thresholdBlitter)
+            var activeEngine = getActiveEngineIcon(usageNow, threshold3d, thresholdVideo, thresholdVideoEnhance, thresholdBlitter)
+            engineIcon = activeEngine.icon
+            badgeColor = activeEngine.color
         }
     }
 
@@ -182,24 +191,42 @@ Item {
         return sortedClients.slice(count);
     }
 
-    function getIcon(usageNow, threshold3d, thresholdVideo, thresholdVideoEnhance, thresholdBlitter) {
+    function getActiveEngineIcon(usageNow, threshold3d, thresholdVideo, thresholdVideoEnhance, thresholdBlitter) {
+        var engines = {
+            'VideoEnhance': {threshold: thresholdVideoEnhance, icon: "icon-hwe.svg"},
+            'Video': {threshold: thresholdVideo, icon: "icon-hw.svg"},
+            'Blitter': {threshold: thresholdBlitter, icon: "icon-blitter.svg"},
+            'Render/3D': {threshold: threshold3d, icon: "icon-3d.svg"}
+        };
 
-        var busy3d = usageNow.engines['Render/3D'].busy
-        var busyVideo = usageNow.engines['Video'].busy
-        var busyVideoEnhance = usageNow.engines['VideoEnhance'].busy
-        var busyBlitter = usageNow.engines['Blitter'].busy
+        var engineInfo = {icon: "icon-idle.svg", busy: 100-usageNow.rc6.value, color: idleColor};
 
-        if (busyVideoEnhance > thresholdVideoEnhance) {
-            return "icon-hwe"
-        } else if (busyVideo > thresholdVideo) {
-            return "icon-hw"
-        } else if (busyBlitter > thresholdBlitter) {
-            return "icon-blitter"
-        } else if (busy3d > threshold3d) {
-            return "icon-3d"
-        } else {
-            return "icon-idle"
+        for (var engine in engines) {
+            var busyEngine = usageNow.engines[engine];
+            if (busyEngine.busy > engines[engine].threshold) {
+                engineInfo.icon = engines[engine].icon;
+                engineInfo.busy = busyEngine.busy;
+                engineInfo.color = getBadeColor(engineInfo.busy, engines[engine].threshold);
+                break;
+            }
         }
+
+        return engineInfo;
+    }
+
+    function getBadeColor(load, dimThreshold, dimm = false) {
+        load = Math.max(0, Math.min(100, load));
+        // Map the load to a hue value (subtract from 120 for 0 to be green and 100 to be red)
+        var hue = 120 - (load * 1.2);
+        var lightness = root.badgeLightness
+        var staturation = 1.0
+        // Return the color using HSL
+        if (load < dimThreshold && dimm) {
+            hue = 193
+            staturation = .6
+            lightness = 0.3
+        }
+        return Qt.hsla(hue/360, staturation, lightness, 1)
     }
 
     MouseArea {
