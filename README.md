@@ -27,7 +27,7 @@ Tooltip
 
 1. Create `/etc/systemd/system/setcap_intel_gpu_top.service` with the following:
 
-    ```sh
+    ```ini
     [Unit]
     Description=Set intel_gpu_top perfmon capabilities
     After=graphical.target
@@ -46,6 +46,24 @@ Tooltip
     ```sh
     sudo systemctl enable --now setcap_intel_gpu_top.service
     ```
+
+3. In systems such as Ubuntu, performance events monitoring are disabled by default. For `intel_gpu_top` to work without root you need to set `/proc/sys/kernel/perf_event_paranoid` to 2. Otherwise you may get an error like this:
+
+   ```sh
+    $ intel_gpu_top                           
+    Failed to initialize PMU! (Permission denied)
+    ...
+   ```
+
+    To solve this, lower the paranoid level to 2 by running `sudo sysctl kernel.perf_event_paranoid=2`
+
+    * To make it permanent create the file `/etc/sysctl.d/99-sysctl-paranoid.conf` with the following content
+
+        ```ini
+        kernel.perf_event_paranoid = 2
+        ```
+
+    Finally, run `intel_gpu_top` to verify it works
 
 ## Current & planned features
 
@@ -86,9 +104,11 @@ Tooltip
 
 ## Resources
 
-* [drm/igt-gpu-tools](https://gitlab.freedesktop.org/drm/igt-gpu-tools)
-* [setcap(8) — Linux manual page](https://man7.org/linux/man-pages/man8/setcap.8.html)
-* [No API/user accessible sysfs files to get GPU stats - drm/intel](https://gitlab.freedesktop.org/drm/intel/-/issues/5018)
+* [IGT GPU Tools](https://gitlab.freedesktop.org/drm/igt-gpu-tools)
+* [Perf events and tool security — The Linux Kernel documentation](https://www.kernel.org/doc/html/latest/admin-guide/perf-security.html)
+* [capabilities(7) - overview of Linux capabilities — Linux manual page](https://man7.org/linux/man-pages/man8/setcap.8.html)
+* [setcap(8) - set file capabilities — Linux manual page](https://man7.org/linux/man-pages/man8/setcap.8.html)
+* [No API/user accessible sysfs files to get GPU stats - drm/intel/issues](https://gitlab.freedesktop.org/drm/intel/-/issues/5018)
 
 ## Credits
 
