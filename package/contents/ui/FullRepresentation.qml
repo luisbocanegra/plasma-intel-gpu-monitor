@@ -1,28 +1,27 @@
-import QtQuick 2.0
-import QtQuick.Dialogs 1.3
-import QtQuick.Controls 2.15
-import QtQuick.Layouts 1.0
-
+import QtQuick
+import QtQuick.Controls
+import QtQuick.Dialogs
+import QtQuick.Layouts
+import org.kde.kirigami as Kirigami
+import org.kde.kquickcontrols
+import org.kde.plasma.components as PlasmaComponents3
+import org.kde.plasma.core as PlasmaCore
+import org.kde.plasma.extras as PlasmaExtras
+import org.kde.plasma.plasmoid
 import "components" as Components
-import org.kde.kirigami 2.20 as Kirigami
-import org.kde.kquickcontrols 2.0
-import org.kde.plasma.components 3.0 as PlasmaComponents3
-import org.kde.plasma.core 2.0 as PlasmaCore
-import org.kde.plasma.extras 2.0 as PlasmaExtras
-import org.kde.plasma.plasmoid 2.0
 
 ColumnLayout {
     id: root
-    Layout.minimumWidth: PlasmaCore.Units.gridUnit * 19
-    Layout.minimumHeight: PlasmaCore.Units.gridUnit * 19
+    Layout.minimumWidth: Kirigami.Units.gridUnit * 19
+    Layout.minimumHeight: Kirigami.Units.gridUnit * 19
     Layout.preferredWidth: rootRep.width
     Layout.preferredHeight: rootRep.height
 
     property bool autoHide: true
 
     property bool onDesktop: plasmoid.location === PlasmaCore.Types.Floating
-    property bool plasmoidExpanded: plasmoid.expanded
-    property bool autoReloadEnabled: onDesktop || plasmoidExpanded
+    // property bool plasmoidExpanded: main.expanded
+    // property bool autoReloadEnabled: onDesktop || plasmoidExpanded
 
     property var usageNow;
     property var clients3d;
@@ -57,7 +56,7 @@ ColumnLayout {
             id:heading
             visible: !(plasmoid.containmentDisplayHints & PlasmaCore.Types.ContainmentDrawsPlasmoidHeading)
 
-            leftPadding: PlasmaCore.Units.smallSpacing
+            leftPadding: Kirigami.Units.smallSpacing
 
             RowLayout {
                 anchors.fill: parent
@@ -72,10 +71,10 @@ ColumnLayout {
                     display: PlasmaComponents3.AbstractButton.IconOnly
                     visible: !onDesktop
                     icon.name: 'configure'
-                    text: Plasmoid.action("configure").text
+                    text: Plasmoid.internalAction("configure").text
 
                     onClicked: {
-                        plasmoid.action("configure").trigger()
+                        Plasmoid.internalAction("configure").trigger()
                     }
 
                     PlasmaComponents3.ToolTip {
@@ -96,7 +95,7 @@ ColumnLayout {
 
                     onClicked: {
                         autoHide = !autoHide
-                        plasmoid.hideOnWindowDeactivate = autoHide
+                        main.hideOnWindowDeactivate = autoHide
                     }
 
                     PlasmaComponents3.ToolTip {
@@ -110,21 +109,13 @@ ColumnLayout {
             id: rootContent
             anchors.fill: parent
 
-            // RowLayout {
-            //     Item { implicitWidth: PlasmaCore.Units.gridUnit / 2}
-            //     PlasmaComponents3.Label {
-            //         text: "Files are still being transferred...";
-            //         opacity: .7
-            //     }
-            // }
-
             PlasmaComponents3.ScrollView {
                 id: scrollView
                 Layout.fillHeight: true
                 Layout.fillWidth: true
 
-                topPadding: PlasmaCore.Units.smallSpacing
-                bottomPadding: PlasmaCore.Units.smallSpacing
+                topPadding: Kirigami.Units.smallSpacing
+                bottomPadding: Kirigami.Units.smallSpacing
 
                 PlasmaComponents3.ScrollBar.horizontal.policy: PlasmaComponents3.ScrollBar.AlwaysOff
                 PlasmaComponents3.ScrollBar.vertical.policy: PlasmaComponents3.ScrollBar.AsNeeded
@@ -134,7 +125,7 @@ ColumnLayout {
                 contentItem: ListView {
                     id: listView
                     // reserve space for the scrollbar
-                    property var sideMargin: PlasmaCore.Units.smallSpacing +
+                    property var sideMargin: Kirigami.Units.smallSpacing +
                                             scrollView.ScrollBar.vertical.width
 
                     leftMargin: sideMargin - (scrollView.ScrollBar.vertical.visible ?

@@ -1,17 +1,16 @@
-import QtQuick 2.15
-import QtQuick.Controls 2.15
-import QtQuick.Layouts 1.0
-import org.kde.plasma.core 2.0 as PlasmaCore
-import org.kde.kquickcontrolsaddons 2.0 as KQuickAddons
-import org.kde.kirigami 2.20 as Kirigami
-import Qt.labs.settings 1.0
+import QtQuick
+import QtQuick.Controls
+import QtQuick.Layouts
+import Qt.labs.settings
+import org.kde.kcmutils as KCM
+import org.kde.kirigami as Kirigami
+import org.kde.plasma.plasma5support as P5Support
 import "components" as Components
-ColumnLayout {
-    
+
+KCM.SimpleKCM {
     id:root
-    anchors.fill: parent
-    property var textAreaPadding: 10 * PlasmaCore.Units.devicePixelRatio
-    property var controlWidth: 48 * PlasmaCore.Units.devicePixelRatio
+    property var textAreaPadding: 10
+    property var controlWidth: 48
     signal configurationChanged
     property string cfg_card: "" //plasmoid.configuration.card
     property alias cfg_max_clients: maxClients.text
@@ -25,18 +24,18 @@ ColumnLayout {
     property string cardsString: ""
 
 
-    PlasmaCore.DataSource {
+    P5Support.DataSource {
         id: getCards
         engine: "executable"
         connectedSources: []
 
-        onNewData: {
+        onNewData: function(source, data) {
             var exitCode = data["exit code"]
             var exitStatus = data["exit status"]
             var stdout = data["stdout"]
             var stderr = data["stderr"]
-            exited(sourceName, exitCode, exitStatus, stdout, stderr)
-            disconnectSource(sourceName) // cmd finished
+            exited(source, exitCode, exitStatus, stdout, stderr)
+            disconnectSource(source) // cmd finished
         }
 
         function exec(cmd) {
@@ -79,7 +78,7 @@ ColumnLayout {
                 devices.push(device)
             }
         });
-
+        devices.push({dri:"6",name:"name",ids:"ids",label:"label"})
         return devices
     }
 
@@ -97,47 +96,44 @@ ColumnLayout {
 
 
         // Make card selection a component so we can load after cardsList is ready
-        Loader {
-            id: myLoader
-            asynchronous: true
-        }
+        // Component doesnt work with Kirigami.FormData.label, 
+        // Loader {
+        //     id: myLoader
+        //     // asynchronous: true
+        // }
 
-        Component {
-            id: comboBoxComponent
+        // Component {
+            // id: comboBoxComponent
             Components.MyComboBox {
                 id: cardCombo
                 model: root.cardsList
                 configName: "card"
                 textRole: "label"
-                formLabel: "Card"
+                Kirigami.FormData.label: "Card:"
                 onConfigValueChanged: {
                     cfg_card = configValue
                 }
             }
-        }
+        // }
 
-        Component.onCompleted: {
-            startupTimer.start()
-        }
+        // Component.onCompleted: {
+        //     startupTimer.start()
+        // }
         
-        Timer {
-            id: startupTimer
-            interval: 250
-            repeat: false
+        // Timer {
+        //     id: startupTimer
+        //     interval: 2000
+        //     repeat: false
 
-            onTriggered: {
-                myLoader.sourceComponent = comboBoxComponent
-            }
-        }
+        //     onTriggered: {
+        //         myLoader.sourceComponent = comboBoxComponent
+        //     }
+        // }
 
         TextField {
             id: maxClients
             // Layout.preferredWidth: controlWidth
             Kirigami.FormData.label: "Max shown programs:"
-            topPadding: textAreaPadding
-            bottomPadding: textAreaPadding
-            leftPadding: textAreaPadding
-            rightPadding: textAreaPadding
             placeholderText: "0-?"
             horizontalAlignment: TextInput.AlignHCenter
             text: parseInt(plasmoid.configuration.max_clients)

@@ -1,18 +1,22 @@
-import QtQuick 2.15
-import org.kde.plasma.core 2.0 as PlasmaCore
-import org.kde.plasma.extras 2.0 as PlasmaExtras
-import org.kde.plasma.plasmoid 2.0
-import org.kde.plasma.components 3.0 as PlasmaComponents3
-import org.kde.kirigami 2.20 as Kirigami
+import QtQuick
+import QtQuick.Controls
+import QtQuick.Layouts
+import org.kde.kirigami as Kirigami
+import org.kde.plasma.components as PlasmaComponents3
+import org.kde.plasma.core as PlasmaCore
+import org.kde.plasma.plasma5support as P5Support
+import org.kde.plasma.plasmoid
 
-Item {
-    id:root
+PlasmoidItem {
+    id:main
+    width: Kirigami.Units.gridUnit * 10
+    height: Kirigami.Units.gridUnit * 4
 
     // Allow full view on the desktop
-    Plasmoid.preferredRepresentation: plasmoid.location ===
-                                    PlasmaCore.Types.Floating ?
-                                    Plasmoid.fullRepresentation :
-                                    Plasmoid.compactRepresentation
+    // preferredRepresentation: plasmoid.location ===
+    //                                 PlasmaCore.Types.Floating ?
+    //                                 fullRepresentation :
+    //                                 compactRepresentation
 
     property var usageNow: {}
     property var usageLast: {}
@@ -33,44 +37,52 @@ Item {
     property int thresholdVideoEnhance: plasmoid.configuration.threshold_video_enhance
     property int thresholdBlitter: plasmoid.configuration.threshold_blitter
 
-    Plasmoid.compactRepresentation: CompactRepresentation {
-        engineIcon: root.engineIcon
-        badgeColor: root.badgeColor
-        PlasmaCore.ToolTipArea {
-            anchors.fill: parent
-            mainItem: Tooltip {
-                width: PlasmaCore.Units.gridUnit * 10
-                usageNow: root.usageNow
-            }
+    compactRepresentation: CompactRepresentation {
+        engineIcon: main.engineIcon
+        badgeColor: main.badgeColor
+        usageNow: main.usageNow
+    }
+
+    MouseArea {
+        id: mouseArea
+        anchors.fill: parent
+        hoverEnabled: true
+        onClicked: {
+            main.expanded = !main.expanded
         }
     }
 
-    Plasmoid.fullRepresentation: FullRepresentation {
-        usageNow: root.usageNow
-        clients3d: root.clients3d
-        clientsVideo: root.clientsVideo
-        clientsVideoEnhance: root.clientsVideoEnhance
-        clientsBlitter: root.clientsBlitter
+    toolTipItem: Tooltip {
+        usageNow: main.usageNow
+        Layout.minimumWidth: item ? item.implicitWidth : 0
+        Layout.maximumWidth: item ? item.implicitWidth : 0
+        Layout.minimumHeight: item ? item.implicitHeight : 0
+        Layout.maximumHeight: item ? item.implicitHeight : 0
     }
 
-    // Plasmoid.status: //usageNow.length>0 ? PlasmaCore.Types.ActiveStatus : PlasmaCore.Types.HiddenStatus
-    // Plasmoid.busy: true
+    fullRepresentation: FullRepresentation {
+        usageNow: main.usageNow
+        clients3d: main.clients3d
+        clientsVideo: main.clientsVideo
+        clientsVideoEnhance: main.clientsVideoEnhance
+        clientsBlitter: main.clientsBlitter
+    }
 
     property string statsString: ""
     property string statsCommand: "timeout 1.5s intel_gpu_top " + (card != "" ? "-d drm:/dev/dri/" + card.split(",")[0] : "") + " -J -s 500"
 
-    PlasmaCore.DataSource {
+    P5Support.DataSource {
         id: getStats
         engine: "executable"
         connectedSources: []
 
-        onNewData: {
+        onNewData: function(source, data) {
             var exitCode = data["exit code"]
             var exitStatus = data["exit status"]
             var stdout = data["stdout"]
             var stderr = data["stderr"]
-            exited(sourceName, exitCode, exitStatus, stdout, stderr)
-            disconnectSource(sourceName) // cmd finished
+            exited(source, exitCode, exitStatus, stdout, stderr)
+            disconnectSource(source) // cmd finished
         }
 
         function exec(cmd) {
@@ -218,7 +230,7 @@ Item {
         load = Math.max(0, Math.min(100, load));
         // Map the load to a hue value (subtract from 120 for 0 to be green and 100 to be red)
         var hue = 120 - (load * 1.2);
-        var lightness = root.badgeLightness
+        var lightness = main.badgeLightness
         var staturation = 1.0
         // Return the color using HSL
         if (load < dimThreshold && dimm) {
@@ -227,11 +239,6 @@ Item {
             lightness = 0.3
         }
         return Qt.hsla(hue/360, staturation, lightness, 1)
-    }
-
-    MouseArea {
-        anchors.fill: parent
-        hoverEnabled: true
     }
 
     Timer {

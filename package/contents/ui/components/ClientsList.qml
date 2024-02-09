@@ -1,9 +1,7 @@
-import QtQuick 2.0
-
-import QtQuick.Layouts 1.0
-
-import org.kde.kirigami 2.20 as Kirigami
-import org.kde.plasma.components 3.0 as PlasmaComponents3
+import QtQuick
+import QtQuick.Layouts
+import org.kde.kirigami as Kirigami
+import org.kde.plasma.components as PlasmaComponents3
 
 
 ColumnLayout {
@@ -23,7 +21,7 @@ ColumnLayout {
             
             RowLayout {
 
-                Item { implicitWidth: units.mediumSpacing }
+                Item { implicitWidth: Kirigami.Units.mediumSpacing }
                 
                 ColumnLayout {
                     spacing: 1
@@ -50,9 +48,9 @@ ColumnLayout {
             RowLayout {
                 visible: clientsList.length - 1 != index
                 width: clientsRoot.width
-                Item { implicitWidth: units.mediumSpacing }
+                Item { implicitWidth: Kirigami.Units.mediumSpacing }
                 Rectangle {
-                    width: parent.width - units.mediumSpacing - 5
+                    width: parent.width - Kirigami.Units.mediumSpacing - 5
                     height: 1
                     color: clientsRoot.dividerColor
                     opacity: clientsRoot.dividerOpacity

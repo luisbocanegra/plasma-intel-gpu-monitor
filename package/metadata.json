@@ -1,4 +1,5 @@
 {
+    "KPackageStructure": "Plasma/Applet",
     "KPlugin": {
         "Authors": [
             {
@@ -10,16 +11,14 @@
         "Category": "System Information",
         "Description": "Performance & accelerated video decoding monitor",
         "Id": "luisbocanegra.intel.gpu.monitor",
-        "EnabledByDefault": "true",
+        "EnabledByDefault": true,
         "Icon":"show-gpu-effects",
         "License": "GPL-3.0",
         "Name": "Intel GPU Monitor",
         "Version": "0.1.1",
         "Website": "https://github.com/luisbocanegra/plasma-intel-gpu-monitor"
     },
-    "KPackageStructure": "Plasma/Applet",
-    "X-Plasma-API": "declarativeappletscript",
-    "X-Plasma-MainScript": "ui/main.qml",
     "X-Plasma-NotificationArea": "true",
-    "X-Plasma-NotificationAreaCategory": "Hardware"
+    "X-Plasma-NotificationAreaCategory": "Hardware",
+    "X-Plasma-API-Minimum-Version": "6.0"
 }

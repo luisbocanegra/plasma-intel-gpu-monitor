@@ -1,13 +1,17 @@
-import QtQuick 2.0
-import QtQuick.Layouts 1.1
-import org.kde.kirigami 2.20 as Kirigami
-import org.kde.plasma.core 2.0 as PlasmaCore
-import org.kde.plasma.components 3.0 as PlasmaComponents3
-import org.kde.plasma.extras 2.0 as PlasmaExtras
-import org.kde.plasma.plasmoid 2.0
+import QtQuick
+import QtQuick.Layouts
+import org.kde.kirigami as Kirigami
+import org.kde.plasma.components as PlasmaComponents3
+import org.kde.plasma.extras as PlasmaExtras
+import org.kde.plasma.plasmoid
 
-ColumnLayout {
-    id: root;
+Item {
+    id: tooltipContentItem;
+    property int preferredTextWidth: Kirigami.Units.gridUnit * 10
+
+    implicitWidth: mainLayout.implicitWidth + Kirigami.Units.gridUnit
+    implicitHeight: mainLayout.implicitHeight + Kirigami.Units.gridUnit
+
     property var usageNow;
     property var dividerColor: Kirigami.Theme.textColor;
     property var dividerOpacity: 0.1;
@@ -27,17 +31,21 @@ ColumnLayout {
 
     ColumnLayout {
         id: mainLayout;
-        Layout.topMargin: PlasmaCore.Units.gridUnit / 2
-        Layout.leftMargin: PlasmaCore.Units.gridUnit / 2
-        Layout.bottomMargin: PlasmaCore.Units.gridUnit / 2
-        Layout.rightMargin: PlasmaCore.Units.gridUnit / 2
-        Layout.preferredWidth: PlasmaCore.Units.gridUnit * 50
+        anchors {
+            left: parent.left
+            top: parent.top
+            margins: Kirigami.Units.largeSpacing
+        }
+        Layout.preferredWidth: Math.min(implicitWidth, preferredTextWidth)
+        Layout.minimumWidth: Math.min(implicitWidth, preferredTextWidth)
+        Layout.maximumWidth: preferredTextWidth
 
         PlasmaExtras.Heading {
             id: tooltipMaintext
             level: 3
             elide: Text.ElideRight
             text: Plasmoid.metaData.name
+            Layout.fillWidth: true
         }
 
         Component {
@@ -45,8 +53,8 @@ ColumnLayout {
             Rectangle {
                 width: mainLayout.width
                 height: 1
-                color: root.dividerColor
-                opacity: root.dividerOpacity
+                color: tooltipContentItem.dividerColor
+                opacity: tooltipContentItem.dividerOpacity
             }
         }
 
