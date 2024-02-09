@@ -1,4 +1,4 @@
-# Intel GPU Monitor plasmoid (WIP)
+# Intel GPU Monitor plasmoid
 
 Plasma Widget that displays Intel GPU usage including wether or not video acceleration is being used
 
@@ -41,7 +41,7 @@ Tooltip
     WantedBy=graphical.target
     ```
 
-2. Start & enable it
+2. Start & enable the service
 
     ```sh
     sudo systemctl enable --now setcap_intel_gpu_top.service
@@ -50,7 +50,7 @@ Tooltip
 3. In systems such as Ubuntu, performance events monitoring are disabled by default. For `intel_gpu_top` to work without root you need to set `/proc/sys/kernel/perf_event_paranoid` to 2. Otherwise you may get an error like this:
 
    ```sh
-    $ intel_gpu_top                           
+    $ intel_gpu_top
     Failed to initialize PMU! (Permission denied)
     ...
    ```
@@ -83,24 +83,21 @@ Tooltip
 ## Installing
 
 * Install from [KDE Store](https://store.kde.org/p/2101680) or use `Get new widgets..`
+  * [Plasma 5 version](https://store.kde.org/p/2101680)
+  * [Plasma 6 version](https://www.pling.com/p/2128477)
 
 ### Manual install
 
-* Install dependencies (please let me know if I missed or added something unnecessary)
+> [!IMPORTANT]
+> The `main` branch was updated to support Plasma 6, to install from source in plasma 5 run `git checkout kf5` before the install script.
 
-  ```txt
-    cmake extra-cmake-modules plasma-framework intel-gpu-tools
-  ```
+1. Install these dependencies (please let me know if I missed or added something unnecessary)
 
-* Install the plasmoid
+    ```txt
+    cmake extra-cmake-modules libplasma intel-gpu-tools
+    ```
 
-  ```sh
-  ./install.sh
-  ```
-
-## How does it work?
-
-* Reads Intel gpu stats using [intel_gpu_top](https://gitlab.freedesktop.org/drm/igt-gpu-tools)
+2. Run `./install.sh`
 
 ## Resources
 
