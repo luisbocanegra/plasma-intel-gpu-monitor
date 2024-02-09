@@ -78,7 +78,6 @@ KCM.SimpleKCM {
                 devices.push(device)
             }
         });
-        devices.push({dri:"6",name:"name",ids:"ids",label:"label"})
         return devices
     }
 
