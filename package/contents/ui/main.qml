@@ -43,15 +43,6 @@ PlasmoidItem {
         usageNow: main.usageNow
     }
 
-    MouseArea {
-        id: mouseArea
-        anchors.fill: parent
-        hoverEnabled: true
-        onClicked: {
-            main.expanded = !main.expanded
-        }
-    }
-
     toolTipItem: Tooltip {
         usageNow: main.usageNow
         Layout.minimumWidth: item ? item.implicitWidth : 0
@@ -114,17 +105,17 @@ PlasmoidItem {
         let goodObjects = [];
 
         lines.forEach((line) => {
-            // If the line starts with '{', it's the start of a new object
+            // start of a new object
             if (line.startsWith('{')) {
                 jsonObject = line;
             }
 
-            // If the line starts with '},', it's the end of an object
+            // end of object
             else if (line.startsWith('},')) {
                 jsonObject += '}';
 
                 try {
-                    // Try to parse the string
+                    // Try to parse as object
                     let parsedObject = JSON.parse(jsonObject);
 
                     goodObjects.push(parsedObject);
@@ -145,15 +136,9 @@ PlasmoidItem {
 
         if (goodObjects.length>1) {
             var stats = goodObjects[goodObjects.length -1];
+            // console.error(JSON.stringify(stats, null, 2));
             usageLast = stats
             return stats
-
-            // if (stats.frequency.actual != 0) {
-            //     usageLast = stats
-            //     return stats
-            // } else {
-            //     return usageLast
-            // }
         } else {
             return usageLast
         }
@@ -178,7 +163,7 @@ PlasmoidItem {
         }
     }
 
-    function getSortedClients(usageNow, engineClass, count=-maxClients) {
+    function getSortedClients(usageNow, engineClass) {
 
         // Filter out clients based on 'busy' value of the specified engine class
         var filteredClients = Object.keys(usageNow.clients).filter(function (clientId) {
@@ -197,10 +182,10 @@ PlasmoidItem {
 
         // Sort clients by 'busy' value
         var sortedClients = filteredClients.sort(function (a, b) {
-            return parseFloat(b.engines[engineClass]['busy']) - parseFloat(a.engines[engineClass]['busy']);
+            return parseFloat(a.engines[engineClass]['busy']) - parseFloat(b.engines[engineClass]['busy']);
         });
 
-        return sortedClients.slice(count);
+        return sortedClients.slice(0, maxClients);
     }
 
     function getActiveEngineIcon(usageNow, threshold3d, thresholdVideo, thresholdVideoEnhance, thresholdBlitter) {
@@ -226,14 +211,13 @@ PlasmoidItem {
         return engineInfo;
     }
 
-    function getBadeColor(load, dimThreshold, dimm = false) {
-        load = Math.max(0, Math.min(100, load));
+    function getBadeColor(load, dimThreshold) {
         // Map the load to a hue value (subtract from 120 for 0 to be green and 100 to be red)
+        load = Math.max(0, Math.min(100, load));
         var hue = 120 - (load * 1.2);
-        var lightness = main.badgeLightness
+        var lightness = badgeLightness
         var staturation = 1.0
-        // Return the color using HSL
-        if (load < dimThreshold && dimm) {
+        if (load < dimThreshold) {
             hue = 193
             staturation = .6
             lightness = 0.3
