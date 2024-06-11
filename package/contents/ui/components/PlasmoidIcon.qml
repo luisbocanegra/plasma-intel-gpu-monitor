@@ -7,27 +7,15 @@ Item {
     id: root
     anchors.centerIn: parent
     property var source
-    KSvg.SvgItem {
-        id: svgItem
-        opacity: 1
+    property var icon: Qt.resolvedUrl("../../icons/" + source).toString().replace("file://", "")
+
+    Kirigami.Icon {
+        anchors.centerIn: parent
         width: parent.width
         height: width
-        property int sourceIndex: 0
-        anchors.centerIn: parent
-        smooth: true
-        svg: KSvg.Svg {
-            id: svg
-            colorSet: Kirigami.Theme.colorSet
-            imagePath: Qt.resolvedUrl("../../icons/" + source)
-        }
+        source: icon
+        active: compact.containsMouse
+        isMask: true
+        color: Kirigami.Theme.textColor
     }
-
-    // Kirigami.Icon {
-    //     anchors.centerIn: parent
-    //     width: parent.width
-    //     height: width
-    //     visible: engineIcon != ""
-    //     source: engineIcon
-    //     smooth: true
-    // }
 }

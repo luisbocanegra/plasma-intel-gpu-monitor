@@ -4,7 +4,7 @@ import org.kde.plasma.core as PlasmaCore
 import org.kde.plasma.plasmoid
 import "components" as Components
 
-Item {
+MouseArea {
     id: compact
     anchors.fill: parent
     property bool isPanelVertical: plasmoid.formFactor === PlasmaCore.Types.Vertical
@@ -14,6 +14,11 @@ Item {
     property color badgeColor
     property var usageNow
 
+
+    hoverEnabled: true
+    onClicked: {
+        main.expanded = !main.expanded
+    }
 
     Item {
         id: container
