@@ -7,17 +7,12 @@ import org.kde.plasma.core as PlasmaCore
 import org.kde.plasma.plasma5support as P5Support
 import org.kde.plasma.plasmoid
 
+import "code/utils.js" as Utils
+
 PlasmoidItem {
     id:main
     width: Kirigami.Units.gridUnit * 10
     height: Kirigami.Units.gridUnit * 4
-
-    // Allow full view on the desktop
-    // preferredRepresentation: plasmoid.location ===
-    //                                 PlasmaCore.Types.Floating ?
-    //                                 fullRepresentation :
-    //                                 compactRepresentation
-
     property var usageNow: {}
     property var usageLast: {}
     property var clients3d: []
@@ -60,6 +55,9 @@ PlasmoidItem {
     }
 
     property string statsString: ""
+    // intel_gpu_top returns a constant stream when using JSON format
+    // the first object doesn't seem to be very accurate so we let it run three times
+    // and later use just the last one
     property string statsCommand: "timeout 1.5s intel_gpu_top " + (card != "" ? "-d drm:/dev/dri/" + card.split(",")[0] : "") + " -J -s 500"
 
     P5Support.DataSource {
@@ -87,142 +85,16 @@ PlasmoidItem {
         target: getStats
         function onExited(cmd, exitCode, exitStatus, stdout, stderr) {
             statsString = stdout.trim();
-            usageNow = getCurrentUsage(statsString);
-            renameEngines(usageNow.engines);
-            clients3d = getSortedClients(usageNow,'Render/3D')
-            clientsVideo = getSortedClients(usageNow,'Video')
-            clientsVideoEnhance = getSortedClients(usageNow,'VideoEnhance')
-            var activeEngine = getActiveEngineIcon(usageNow, threshold3d, thresholdVideo, thresholdVideoEnhance, thresholdBlitter)
+            usageNow = Utils.getCurrentUsage(statsString);
+            usageNow = Utils.mergeObjects(Globals.baseStats, usageNow)
+            usageNow = Utils.renameEngines(usageNow);
+            clients3d = Utils.getSortedClients(usageNow,'Render/3D')
+            clientsVideo = Utils.getSortedClients(usageNow,'Video')
+            clientsVideoEnhance = Utils.getSortedClients(usageNow,'VideoEnhance')
+            var activeEngine = Utils.getActiveEngineIcon(usageNow, threshold3d, thresholdVideo, thresholdVideoEnhance, thresholdBlitter)
             engineIcon = activeEngine.icon
             badgeColor = activeEngine.color
         }
-    }
-
-    function getCurrentUsage(statsString) {
-
-        var lines = statsString.split("\n");
-        let jsonObject = '';
-        let goodObjects = [];
-
-        lines.forEach((line) => {
-            // start of a new object
-            if (line.startsWith('{')) {
-                jsonObject = line;
-            }
-
-            // end of object
-            else if (line.startsWith('},')) {
-                jsonObject += '}';
-
-                try {
-                    // Try to parse as object
-                    let parsedObject = JSON.parse(jsonObject);
-
-                    goodObjects.push(parsedObject);
-                } catch (error) {
-                    console.error('Broken object:', jsonObject);
-                }
-
-                // Reset for the next object
-                jsonObject = '';
-            }
-            // Otherwise, add the line to the current object
-            else {
-                jsonObject += line;
-            }
-        });
-
-        //console.log(goodObjects.length);
-
-        if (goodObjects.length>1) {
-            var stats = goodObjects[goodObjects.length -1];
-            // console.error(JSON.stringify(stats, null, 2));
-            usageLast = stats
-            return stats
-        } else {
-            return usageLast
-        }
-    }
-
-    // convert pysical engines to classes (removes /NUMBER at the end)
-    function renameEngines(obj) {
-        for (let key in obj) {
-            if (obj.hasOwnProperty(key)) {
-                
-                let parts = key.split("/")
-
-                if ( !isNaN(Number(parts[parts.length-1])) ) {
-                    let newKey = key.split("/")
-                    newKey.pop()
-                    newKey = newKey.join("/")
-
-                    obj[newKey] = obj[key];
-                    delete obj[key];
-                }
-            }
-        }
-    }
-
-    function getSortedClients(usageNow, engineClass) {
-
-        // Filter out clients based on 'busy' value of the specified engine class
-        var filteredClients = Object.keys(usageNow.clients).filter(function (clientId) {
-            var clientData = usageNow.clients[clientId];
-            return engineClass in clientData['engine-classes'] && parseFloat(clientData['engine-classes'][engineClass]['busy']) > 0;
-        }).map(function (clientId) {
-            // Include client info in the list
-            var clientData = usageNow.clients[clientId];
-            return {
-            id: clientId,
-            name: clientData.name,
-            pid: clientData.pid,
-            engines: clientData['engine-classes']
-            };
-        });
-
-        // Sort clients by 'busy' value
-        var sortedClients = filteredClients.sort(function (a, b) {
-            return parseFloat(a.engines[engineClass]['busy']) - parseFloat(b.engines[engineClass]['busy']);
-        });
-
-        return sortedClients.slice(0, maxClients);
-    }
-
-    function getActiveEngineIcon(usageNow, threshold3d, thresholdVideo, thresholdVideoEnhance, thresholdBlitter) {
-        var engines = {
-            'VideoEnhance': {threshold: thresholdVideoEnhance, icon: "icon-hwe.svg"},
-            'Video': {threshold: thresholdVideo, icon: "icon-hw.svg"},
-            'Blitter': {threshold: thresholdBlitter, icon: "icon-blitter.svg"},
-            'Render/3D': {threshold: threshold3d, icon: "icon-3d.svg"}
-        };
-
-        var engineInfo = {icon: "icon-idle.svg", busy: 100-usageNow.rc6.value, color: idleColor};
-
-        for (var engine in engines) {
-            var busyEngine = usageNow.engines[engine];
-            if (busyEngine.busy > engines[engine].threshold) {
-                engineInfo.icon = engines[engine].icon;
-                engineInfo.busy = busyEngine.busy;
-                engineInfo.color = getBadeColor(engineInfo.busy, engines[engine].threshold);
-                break;
-            }
-        }
-
-        return engineInfo;
-    }
-
-    function getBadeColor(load, dimThreshold) {
-        // Map the load to a hue value (subtract from 120 for 0 to be green and 100 to be red)
-        load = Math.max(0, Math.min(100, load));
-        var hue = 120 - (load * 1.2);
-        var lightness = badgeLightness
-        var staturation = 1.0
-        if (load < dimThreshold) {
-            hue = 193
-            staturation = .6
-            lightness = 0.3
-        }
-        return Qt.hsla(hue/360, staturation, lightness, 1)
     }
 
     Timer {
