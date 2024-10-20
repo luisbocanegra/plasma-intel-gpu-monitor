@@ -12,10 +12,10 @@
         "Description": "Performance & accelerated video decoding monitor",
         "Id": "luisbocanegra.intel.gpu.monitor",
         "EnabledByDefault": true,
-        "Icon":"show-gpu-effects",
+        "Icon": "show-gpu-effects",
         "License": "GPL-3.0",
         "Name": "Intel GPU Monitor",
-        "Version": "0.2.0",
+        "Version": "0.3.0",
         "Website": "https://github.com/luisbocanegra/plasma-intel-gpu-monitor"
     },
     "X-Plasma-NotificationArea": "true",
