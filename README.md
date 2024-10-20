@@ -1,15 +1,19 @@
-# Intel GPU Monitor plasmoid
+# Intel GPU Monitor
+
+<div align="center">
+
+[![Dynamic JSON Badge](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Fluisbocanegra%2Fplasma-intel-gpu-monitor%2Fmain%2Fpackage%2Fmetadata.json&query=KPlugin.Version&color=1f425f&labelColor=2d333b&logo=kde&label=KDE%20Store)](https://store.kde.org/p/2130967)
 
 Plasma Widget that displays Intel GPU usage including wether or not video acceleration is being used
+
+</div>
 
 ## Screenshots
 
 ![expanded](screenshots/expanded.png)
 
 <details>
-    <summary>More</summary>
-
-Settings
+    <summary>Settings</summary>
 
 ![tooltip](screenshots/settings.png)
 
@@ -74,13 +78,18 @@ Tooltip
   * [x] Custom max clients (program names) to show in engine utilization
 * [x] GPU selection
 * [ ] Custom icons support
-* [ ] Show current engine load
-  * [ ] With badge
+* [x] Show current engine load
+  * [x] With badge
   * [x] With color dot
 * [x] Custom engine utilization threshold to update icons
-* [ ] Show intel_gpu_top isn't available or doesn't have perfmon capabilities set
+* [x] Show intel_gpu_top isn't available or doesn't have perfmon capabilities set
 
 ## Installing
+
+### KDE Store
+
+1. **Right click on the Panel/Desktop** > **Add or manage widgets** > **Add new...** > **Download new...**
+2. **Search** for "**Intel GPU Monitor**", install and add it to your Panel/Desktop.
 
 * Install from [KDE Store](https://store.kde.org/p/2101680) or use `Get new widgets..`
   * [Plasma 5 version](https://store.kde.org/p/2101680)
@@ -98,6 +107,15 @@ Tooltip
     ```
 
 2. Run `./install.sh`
+
+## Support the development
+
+* If you like the project please consider donating/sponsoring this and [my other open source work](https://github.com/luisbocanegra?tab=repositories&q=&type=source&language=&sort=stargazers)
+
+  [![GitHub Sponsors](https://img.shields.io/badge/GitHub_Sponsors-supporter?logo=githubsponsors&color=%2329313C)](https://github.com/sponsors/luisbocanegra) [![Ko-fi](https://img.shields.io/badge/Ko--fi-supporter?logo=ko-fi&logoColor=%23ffffff&color=%23467BEB)](https://www.buymeacoffee.com/luisbocanegra) [![Liberapay](https://img.shields.io/badge/Liberapay-supporter?logo=liberapay&logoColor=%23282828&color=%23F6C814)](https://liberapay.com/luisbocanegra/) [![PayPal](https://img.shields.io/badge/PayPal-supporter?logo=paypal&logoColor=%23ffffff&color=%23003087)](https://www.paypal.com/donate/?hosted_button_id=Y5TMH3Z4YZRDA)
+
+* [Give it a star on GitHub](https://github.com/luisbocanegra/plasma-intel-gpu-monitor)
+* Rate/review in the [KDE Store](https://store.kde.org/p/2130967)
 
 ## Resources
 
