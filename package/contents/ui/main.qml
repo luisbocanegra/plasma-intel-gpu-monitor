@@ -16,6 +16,9 @@ PlasmoidItem {
     height: Kirigami.Units.gridUnit * 4
     property var usageNow: Globals.baseStats
     property var usageLast: Globals.baseStats
+    property int usageSource: plasmoid.configuration.usageSource
+    property var currentEngineUsage
+    property var currentUsage: usageSource === 0 ? currentEngineUsage : 100 - usageNow.rc6.value
     property var clients3d: []
     property var clientsVideo: []
     property var clientsVideoEnhance: []
@@ -34,10 +37,24 @@ PlasmoidItem {
     property int thresholdBlitter: plasmoid.configuration.threshold_blitter
     property string commandEerror: ""
 
+    Plasmoid.icon: Qt.resolvedUrl("../icons/" + engineIcon).toString().replace("file://", "")
+
+    property bool needsToBeSquare: (Plasmoid.containmentType & PlasmaCore.Types.CustomEmbeddedContainment)
+                | (Plasmoid.containmentDisplayHints & PlasmaCore.Types.ContainmentForcesSquarePlasmoids)
+
+    onNeedsToBeSquareChanged: {
+        Qt.callLater(function() {
+            if (plasmoid.configuration.needsToBeSquare !== needsToBeSquare) {
+                plasmoid.configuration.needsToBeSquare = needsToBeSquare
+                plasmoid.configuration.writeConfig();
+            }
+        })
+    }
+
     compactRepresentation: CompactRepresentation {
         engineIcon: main.engineIcon
         badgeColor: main.badgeColor
-        usageNow: main.usageNow
+        currentUsage: main.currentUsage
     }
 
     toolTipItem: Tooltip {
@@ -110,6 +127,7 @@ PlasmoidItem {
             var activeEngine = Utils.getActiveEngineIcon(usageNow, threshold3d, thresholdVideo, thresholdVideoEnhance, thresholdBlitter)
             engineIcon = activeEngine.icon
             badgeColor = activeEngine.color
+            currentEngineUsage = activeEngine.busy
         }
     }
 

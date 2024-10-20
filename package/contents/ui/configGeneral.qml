@@ -5,6 +5,7 @@ import Qt.labs.settings
 import org.kde.kcmutils as KCM
 import org.kde.kirigami as Kirigami
 import org.kde.plasma.plasma5support as P5Support
+import org.kde.plasma.plasmoid
 import "components" as Components
 
 KCM.SimpleKCM {
@@ -18,10 +19,25 @@ KCM.SimpleKCM {
     property alias cfg_threshold_video: thresholdVideo.value
     property alias cfg_threshold_video_enhance: thresholdVideoEnhance.value
     property alias cfg_threshold_blitter: thresholdBlitter.value
-
     property var cardsList: []
     property string getCardsCommand: "intel_gpu_top -L"
     property string cardsString: ""
+
+    property bool cfg_needsToBeSquare
+
+    readonly property bool canShowMoreInCompactMode: !cfg_needsToBeSquare
+
+    property alias cfg_showUsageMode: showUsageModeComboBox.currentIndex
+    property alias cfg_badgeStyle: badgeStyleComboBox.currentIndex
+    property alias cfg_usageSource: usageSourceComboBox.currentIndex
+
+    property var showUsageModes: {
+        let modes = ["Disable", "Badge"]
+        if (canShowMoreInCompactMode) {
+            modes.push("Beside icon")
+        }
+        return modes
+    }
 
 
     P5Support.DataSource {
@@ -183,6 +199,30 @@ KCM.SimpleKCM {
             Kirigami.FormData.label: "Render/3D:"
             from: 0
             to: 100
+        }
+
+        Kirigami.Separator {
+            Kirigami.FormData.label: i18n("Appearance")
+            Kirigami.FormData.isSection: true
+        }
+
+        ComboBox {
+            Kirigami.FormData.label: i18n("Show usage:")
+            id: showUsageModeComboBox
+            model: showUsageModes
+        }
+
+        ComboBox {
+            Kirigami.FormData.label: i18n("Badge style:")
+            id: badgeStyleComboBox
+            model: ["Percentage", "Color circle"]
+            visible: cfg_showUsageMode === 1
+        }
+
+        ComboBox {
+            Kirigami.FormData.label: i18n("Usage source:")
+            id: usageSourceComboBox
+            model: ["Current engine", "Total (RC6)"]
         }
     }
 }

@@ -23,5 +23,23 @@
         <default>1</default>
       </entry>
 
+      <!-- 0: disable, 1: badge, 2: beside icon -->
+      <entry name="showUsageMode" type="Int">
+        <default>1</default>
+      </entry>
+
+      <!-- 0: percentage, 1: color -->
+      <entry name="badgeStyle" type="Int">
+        <default>1</default>
+      </entry>
+
+      <!-- 0: current engine, 1: total (rc6) -->
+      <entry name="usageSource" type="Int">
+        <default>0</default>
+      </entry>
+
+      <entry name="needsToBeSquare" type="Bool">
+        <default>false</default>
+      </entry>
     </group>
 </kcfg>
