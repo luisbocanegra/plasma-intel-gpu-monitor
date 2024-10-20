@@ -85,7 +85,12 @@ function getSortedClients(usageNow, engineClass) {
 
   return sortedClients.slice(0, maxClients);
 }
-
+/**
+ * Return a color between green and red based on utilization
+ * @param {number} load Utilization 0-100
+ * @param {number} dimThreshold Idle threshold to return a dimm color
+ * @returns {color} Qt color
+ */
 function getBadeColor(load, dimThreshold) {
   // Map the load to a hue value (subtract from 120 for 0 to be green and 100 to be red)
   load = Math.max(0, Math.min(100, load));
@@ -129,4 +134,26 @@ function getActiveEngineIcon(usageNow, threshold3d, thresholdVideo, thresholdVid
     }
   }
   return engineInfo;
+}
+
+/**
+ * Fill missing properties of an object with properties of base object
+ * @param {object} baseObject Base Object
+ * @param {object} newObject New object
+ * @returns {object} Merged object
+ */
+function mergeObjects(baseObject, newObject) {
+  for (var key in baseObject) {
+    if (typeof baseObject[key] === "object" && baseObject[key] !== null) {
+      if (!newObject.hasOwnProperty(key)) {
+        newObject[key] = {}
+      }
+      mergeObjects(baseObject[key], newObject[key])
+    } else {
+      if (!newObject.hasOwnProperty(key)) {
+        newObject[key] = baseObject[key]
+      }
+    }
+  }
+  return newObject
 }

@@ -8,13 +8,14 @@ import org.kde.plasma.plasma5support as P5Support
 import org.kde.plasma.plasmoid
 
 import "code/utils.js" as Utils
+import "code/globals.js" as Globals
 
 PlasmoidItem {
     id:main
     width: Kirigami.Units.gridUnit * 10
     height: Kirigami.Units.gridUnit * 4
-    property var usageNow: {}
-    property var usageLast: {}
+    property var usageNow: Globals.baseStats
+    property var usageLast: Globals.baseStats
     property var clients3d: []
     property var clientsVideo: []
     property var clientsVideoEnhance: []
@@ -31,6 +32,7 @@ PlasmoidItem {
     property int thresholdVideo: plasmoid.configuration.threshold_video
     property int thresholdVideoEnhance: plasmoid.configuration.threshold_video_enhance
     property int thresholdBlitter: plasmoid.configuration.threshold_blitter
+    property string commandEerror: ""
 
     compactRepresentation: CompactRepresentation {
         engineIcon: main.engineIcon
@@ -52,6 +54,7 @@ PlasmoidItem {
         clientsVideo: main.clientsVideo
         clientsVideoEnhance: main.clientsVideoEnhance
         clientsBlitter: main.clientsBlitter
+        commandEerror: main.commandEerror
     }
 
     property string statsString: ""
@@ -84,8 +87,21 @@ PlasmoidItem {
     Connections {
         target: getStats
         function onExited(cmd, exitCode, exitStatus, stdout, stderr) {
+            if (exitCode !== 124) {
+                commandEerror = `command: ${cmd}\nexit code: ${exitCode}\nexit status: ${exitStatus}\nstdout: ${stdout}\nstderr: ${stderr}\n`
+                return
+            }
             statsString = stdout.trim();
             usageNow = Utils.getCurrentUsage(statsString);
+            if (usageNow) {
+                usageLast = usageNow
+            } else {
+                usageNow = usageLast
+            }
+            if (!usageNow || Object.keys(usageNow).length === 0) {
+                return
+            }
+            commandEerror = ""
             usageNow = Utils.mergeObjects(Globals.baseStats, usageNow)
             usageNow = Utils.renameEngines(usageNow);
             clients3d = Utils.getSortedClients(usageNow,'Render/3D')

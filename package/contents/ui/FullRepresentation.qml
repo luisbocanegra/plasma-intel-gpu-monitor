@@ -23,6 +23,7 @@ ColumnLayout {
     // property bool plasmoidExpanded: main.expanded
     // property bool autoReloadEnabled: onDesktop || plasmoidExpanded
 
+    property string commandEerror
     property var usageNow;
     property var clients3d;
     property var clientsVideo;
@@ -109,6 +110,35 @@ ColumnLayout {
             id: rootContent
             anchors.fill: parent
 
+            // Workaround for QTBUG-21989
+            TextInput {
+                id: clipboard
+                visible: false
+                property string content
+                onContentChanged: {
+                    text = content
+                    selectAll()
+                    copy()
+                }
+            }
+
+            Kirigami.InlineMessage {
+                Layout.fillWidth: true
+                text: "There was an error while trying to read GPU stats\n"+commandEerror
+                visible: commandEerror !== ""
+                type: Kirigami.MessageType.Error
+                Layout.margins: Kirigami.Units.smallSpacing
+                actions: [
+                    Kirigami.Action {
+                        icon.name: "edit-copy-symbolic"
+                        text: "Copy"
+                        onTriggered: {
+                            clipboard.content = commandEerror
+                        }
+                    }
+                ]
+            }
+
             PlasmaComponents3.ScrollView {
                 id: scrollView
                 Layout.fillHeight: true
@@ -193,37 +223,39 @@ ColumnLayout {
                             }
                         }
 
-                        Loader {
-                            sourceComponent: dividerComponent
+                        ColumnLayout {
+                            visible: usageNow["imc-bandwidth"].reads !== -1
+                                && usageNow["imc-bandwidth"].writes
+                            Loader {
+                                sourceComponent: dividerComponent
+                            }
+                            RowLayout {
+                                PlasmaComponents3.Label {
+                                    text: "IMC Reads";
+                                    opacity: 1
+                                }
+                                Item { Layout.fillWidth: true }
+                                PlasmaComponents3.Label {
+                                    text: truncateNumber(usageNow["imc-bandwidth"].reads)+' '+usageNow["imc-bandwidth"].unit;
+                                }
+                            }
+
+                            Loader {
+                                sourceComponent: dividerComponent
+                            }
+                            RowLayout {
+                                PlasmaComponents3.Label {
+                                    text: "IMC Writes";
+                                    opacity: 1
+                                }
+                                Item { Layout.fillWidth: true }
+                                PlasmaComponents3.Label {
+                                    text: truncateNumber(usageNow["imc-bandwidth"].writes)+' '+usageNow["imc-bandwidth"].unit;
+                                    // opacity: .7
+                                }
+                            }
                         }
 
-                        RowLayout {
-                            PlasmaComponents3.Label {
-                                text: "IMC Reads";
-                                opacity: 1
-                            }
-                            Item { Layout.fillWidth: true }
-                            PlasmaComponents3.Label {
-                                text: truncateNumber(usageNow["imc-bandwidth"].reads)+' '+usageNow["imc-bandwidth"].unit;
-                                // opacity: .7
-                            }
-                        }
-
-                        Loader {
-                            sourceComponent: dividerComponent
-                        }
-
-                        RowLayout {
-                            PlasmaComponents3.Label {
-                                text: "IMC Writes";
-                                opacity: 1
-                            }
-                            Item { Layout.fillWidth: true }
-                            PlasmaComponents3.Label {
-                                text: truncateNumber(usageNow["imc-bandwidth"].writes)+' '+usageNow["imc-bandwidth"].unit;
-                                // opacity: .7
-                            }
-                        }
                         
                         // ---------------------------------------------------------
 
