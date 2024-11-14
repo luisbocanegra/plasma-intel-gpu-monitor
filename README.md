@@ -2,7 +2,7 @@
 
 <div align="center">
 
-[![Dynamic JSON Badge](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Fluisbocanegra%2Fplasma-intel-gpu-monitor%2Fmain%2Fpackage%2Fmetadata.json&query=KPlugin.Version&color=1f425f&labelColor=2d333b&logo=kde&label=KDE%20Store)](https://store.kde.org/p/2130967)
+[![Dynamic JSON Badge](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Fluisbocanegra%2Fplasma-intel-gpu-monitor%2Fmain%2Fpackage%2Fmetadata.json&query=KPlugin.Version&color=1f425f&labelColor=2d333b&logo=kde&label=KDE%20Store)](https://store.kde.org/p/2128477)
 
 Plasma Widget that displays Intel GPU usage including wether or not video acceleration is being used
 
@@ -79,7 +79,7 @@ Tooltip
 * [x] GPU selection
 * [ ] Custom icons support
 * [x] Show current engine load
-  * [x] With badge
+  * [x] With badge or text
   * [x] With color dot
 * [x] Custom engine utilization threshold to update icons
 * [x] Show intel_gpu_top isn't available or doesn't have perfmon capabilities set
