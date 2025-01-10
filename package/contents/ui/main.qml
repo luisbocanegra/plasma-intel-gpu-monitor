@@ -109,18 +109,18 @@ PlasmoidItem {
                 return
             }
             statsString = stdout.trim();
-            usageNow = Utils.getCurrentUsage(statsString);
-            if (usageNow) {
-                usageLast = usageNow
+            let usageTemp = Utils.getCurrentUsage(statsString);
+            if (usageTemp) {
+                usageLast = usageTemp
             } else {
-                usageNow = usageLast
+                usageTemp = usageLast
             }
-            if (!usageNow || Object.keys(usageNow).length === 0) {
+            if (!usageTemp || Object.keys(usageTemp).length === 0) {
                 return
             }
             commandEerror = ""
-            usageNow = Utils.mergeObjects(Globals.baseStats, usageNow)
-            usageNow = Utils.renameEngines(usageNow);
+            usageTemp = Utils.mergeObjects(Globals.baseStats, usageTemp)
+            usageNow = Utils.renameEngines(usageTemp);
             clients3d = Utils.getSortedClients(usageNow,'Render/3D')
             clientsVideo = Utils.getSortedClients(usageNow,'Video')
             clientsVideoEnhance = Utils.getSortedClients(usageNow,'VideoEnhance')
