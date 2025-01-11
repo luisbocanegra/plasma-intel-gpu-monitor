@@ -71,6 +71,9 @@ Tooltip
 
 ## Current & planned features
 
+> [!IMPORTANT]
+> Depending on the GPU model, some features may not be available, unsupported features will show a -1 value in the widget view. I will hide them in a later version.
+
 * [x] Show General usage
   * [x] Load, Frequency, Power consumption
   * [x] Usage per engine (`Render/3D`, `Video & VideoEnhance`, `Blitter`)
