@@ -15,7 +15,7 @@
         "Icon": "show-gpu-effects",
         "License": "GPL-3.0",
         "Name": "Intel GPU Monitor",
-        "Version": "0.3.1",
+        "Version": "0.3.2",
         "Website": "https://github.com/luisbocanegra/plasma-intel-gpu-monitor"
     },
     "X-Plasma-NotificationArea": "true",
