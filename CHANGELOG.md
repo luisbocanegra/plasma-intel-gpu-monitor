@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.2](https://github.com/luisbocanegra/plasma-intel-gpu-monitor/compare/v0.3.1...v0.3.2) (2025-05-02)
+
+
+### Bug Fixes
+
+* use temp var for incomplete stats to avoid errors log spam ([f7125e3](https://github.com/luisbocanegra/plasma-intel-gpu-monitor/commit/f7125e3597350f7acf8eb2fdfcdebc57627b80f3))
+
 ## [0.3.1](https://github.com/luisbocanegra/plasma-intel-gpu-monitor/compare/v0.3.0...v0.3.1) (2024-11-09)
 
 
