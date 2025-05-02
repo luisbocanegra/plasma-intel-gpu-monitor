@@ -94,9 +94,9 @@ Tooltip
 1. **Right click on the Panel/Desktop** > **Add or manage widgets** > **Add new...** > **Download new...**
 2. **Search** for "**Intel GPU Monitor**", install and add it to your Panel/Desktop.
 
-* Install from [KDE Store](https://store.kde.org/p/2101680) or use `Get new widgets..`
+* Install from [KDE Store](https://store.kde.org/p/2128477) or use `Get new widgets..`
   * [Plasma 5 version](https://store.kde.org/p/2101680)
-  * [Plasma 6 version](https://www.pling.com/p/2128477)
+  * [Plasma 6 version](https://store.kde.org/p/2128477)
 
 ### Manual install
 
@@ -118,7 +118,7 @@ Tooltip
   [![GitHub Sponsors](https://img.shields.io/badge/GitHub_Sponsors-supporter?logo=githubsponsors&color=%2329313C)](https://github.com/sponsors/luisbocanegra) [![Ko-fi](https://img.shields.io/badge/Ko--fi-supporter?logo=ko-fi&logoColor=%23ffffff&color=%23467BEB)](https://www.buymeacoffee.com/luisbocanegra) [![Liberapay](https://img.shields.io/badge/Liberapay-supporter?logo=liberapay&logoColor=%23282828&color=%23F6C814)](https://liberapay.com/luisbocanegra/) [![PayPal](https://img.shields.io/badge/PayPal-supporter?logo=paypal&logoColor=%23ffffff&color=%23003087)](https://www.paypal.com/donate/?hosted_button_id=Y5TMH3Z4YZRDA)
 
 * [Give it a star on GitHub](https://github.com/luisbocanegra/plasma-intel-gpu-monitor)
-* Rate/review in the [KDE Store](https://store.kde.org/p/2130967)
+* Rate/review in the [KDE Store](https://store.kde.org/p/2128477)
 
 ## Resources
 
