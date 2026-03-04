@@ -45,16 +45,16 @@ function getCurrentUsage(statsString) {
  */
 function renameEngines(stats) {
   for (let key in stats.engines) {
-    let parts = key.split("/")
+    let parts = key.split("/");
     if (!isNaN(Number(parts[parts.length - 1]))) {
-      parts.pop()
-      let newKey = parts.join("/")
+      parts.pop();
+      let newKey = parts.join("/");
 
       stats.engines[newKey] = stats.engines[key];
       delete stats.engines[key];
     }
   }
-  return stats
+  return stats;
 }
 
 /**
@@ -95,14 +95,14 @@ function getBadeColor(load, dimThreshold) {
   // Map the load to a hue value (subtract from 120 for 0 to be green and 100 to be red)
   load = Math.max(0, Math.min(100, load));
   var hue = 120 - (load * 1.2);
-  var lightness = badgeLightness
-  var staturation = 1.0
+  var lightness = badgeLightness;
+  var staturation = 1.0;
   if (load < dimThreshold) {
-    hue = 193
-    staturation = .6
-    lightness = 0.3
+    hue = 193;
+    staturation = .6;
+    lightness = 0.3;
   }
-  return Qt.hsla(hue / 360, staturation, lightness, 1)
+  return Qt.hsla(hue / 360, staturation, lightness, 1);
 }
 
 /**
@@ -146,14 +146,14 @@ function mergeObjects(baseObject, newObject) {
   for (var key in baseObject) {
     if (typeof baseObject[key] === "object" && baseObject[key] !== null) {
       if (!newObject.hasOwnProperty(key)) {
-        newObject[key] = {}
+        newObject[key] = {};
       }
-      mergeObjects(baseObject[key], newObject[key])
+      mergeObjects(baseObject[key], newObject[key]);
     } else {
       if (!newObject.hasOwnProperty(key)) {
-        newObject[key] = baseObject[key]
+        newObject[key] = baseObject[key];
       }
     }
   }
-  return newObject
+  return newObject;
 }

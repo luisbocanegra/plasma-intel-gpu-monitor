@@ -1,7 +1,6 @@
 import QtQuick
 import QtQuick.Controls
 
-
 ComboBox {
     id: customComboBox
     property string configValue: ""
@@ -13,11 +12,11 @@ ComboBox {
     }
 
     function updateSelected() {
-        var index = 0
+        var index = 0;
         if (model.length > 0) {
-            for (var i= 0; i < model.length; i++) {
-                console.log("mi",model[i].dri);
-                if (model[i].dri===plasmoid.configuration[configName].split(",")[0]){
+            for (var i = 0; i < model.length; i++) {
+                console.log("mi", model[i].dri);
+                if (model[i].dri === plasmoid.configuration[configName].split(",")[0]) {
                     index = i;
                     break;
                 }
@@ -38,15 +37,15 @@ ComboBox {
         }
 
         onClicked: {
-            customComboBox.popup.open()
+            customComboBox.popup.open();
         }
     }
 
     Component.onCompleted: {
-        updateSelected()
+        updateSelected();
     }
 
     onModelChanged: {
-        updateSelected()
+        updateSelected();
     }
 }

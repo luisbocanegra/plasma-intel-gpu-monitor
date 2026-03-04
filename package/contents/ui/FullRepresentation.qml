@@ -21,14 +21,13 @@ ColumnLayout {
     // property bool autoReloadEnabled: onDesktop || plasmoidExpanded
 
     property string commandEerror
-    property var usageNow;
-    property var clients3d;
-    property var clientsVideo;
-    property var clientsVideoEnhance;
-    property var clientsBlitter;
-    property var dividerColor: Kirigami.Theme.textColor;
-    property var dividerOpacity: 0.12;
-
+    property var usageNow
+    property var clients3d
+    property var clientsVideo
+    property var clientsVideoEnhance
+    property var clientsBlitter
+    property var dividerColor: Kirigami.Theme.textColor
+    property var dividerOpacity: 0.12
 
     function truncateString(str, n) {
         if (str.length > n) {
@@ -44,14 +43,14 @@ ColumnLayout {
     }
 
     PlasmaExtras.Representation {
-        collapseMarginsHint: true
         id: rootRep
+        collapseMarginsHint: true
 
         Layout.fillWidth: true
         Layout.fillHeight: true
 
         header: PlasmaExtras.PlasmoidHeading {
-            id:heading
+            id: heading
             visible: !(plasmoid.containmentDisplayHints & PlasmaCore.Types.ContainmentDrawsPlasmoidHeading)
 
             leftPadding: Kirigami.Units.smallSpacing
@@ -72,7 +71,7 @@ ColumnLayout {
                     text: Plasmoid.internalAction("configure").text
 
                     onClicked: {
-                        Plasmoid.internalAction("configure").trigger()
+                        Plasmoid.internalAction("configure").trigger();
                     }
 
                     PlasmaComponents3.ToolTip {
@@ -92,8 +91,8 @@ ColumnLayout {
                     checked: !autoHide
 
                     onClicked: {
-                        autoHide = !autoHide
-                        main.hideOnWindowDeactivate = autoHide
+                        autoHide = !autoHide;
+                        main.hideOnWindowDeactivate = autoHide;
                     }
 
                     PlasmaComponents3.ToolTip {
@@ -113,15 +112,15 @@ ColumnLayout {
                 visible: false
                 property string content
                 onContentChanged: {
-                    text = content
-                    selectAll()
-                    copy()
+                    text = content;
+                    selectAll();
+                    copy();
                 }
             }
 
             Kirigami.InlineMessage {
                 Layout.fillWidth: true
-                text: "There was an error while trying to read GPU stats\n"+commandEerror
+                text: "There was an error while trying to read GPU stats\n" + commandEerror
                 visible: commandEerror !== ""
                 type: Kirigami.MessageType.Error
                 Layout.margins: Kirigami.Units.smallSpacing
@@ -130,7 +129,7 @@ ColumnLayout {
                         icon.name: "edit-copy-symbolic"
                         text: "Copy"
                         onTriggered: {
-                            clipboard.content = commandEerror
+                            clipboard.content = commandEerror;
                         }
                     }
                 ]
@@ -152,11 +151,9 @@ ColumnLayout {
                 contentItem: ListView {
                     id: listView
                     // reserve space for the scrollbar
-                    property var sideMargin: Kirigami.Units.smallSpacing +
-                                            scrollView.ScrollBar.vertical.width
+                    property var sideMargin: Kirigami.Units.smallSpacing + scrollView.ScrollBar.vertical.width
 
-                    leftMargin: sideMargin - (scrollView.ScrollBar.vertical.visible ?
-                                            scrollView.ScrollBar.vertical.width : 0)
+                    leftMargin: sideMargin - (scrollView.ScrollBar.vertical.visible ? scrollView.ScrollBar.vertical.width : 0)
                     rightMargin: sideMargin
                     boundsBehavior: Flickable.StopAtBounds
                     clip: true
@@ -182,24 +179,26 @@ ColumnLayout {
                         }
 
                         PlasmaComponents3.Label {
-                            text: plasmoid.configuration.card.split(",")[1];
+                            text: plasmoid.configuration.card.split(",")[1]
                             opacity: .7
                         }
 
                         PlasmaExtras.Heading {
                             level: 3
-                            text: "Usage";
+                            text: "Usage"
                             Layout.alignment: Qt.AlignHCenter
                         }
 
                         RowLayout {
                             PlasmaComponents3.Label {
-                                text: "Load";
+                                text: "Load"
                                 opacity: 1
                             }
-                            Item { Layout.fillWidth: true }
+                            Item {
+                                Layout.fillWidth: true
+                            }
                             PlasmaComponents3.Label {
-                                text: truncateNumber(100-root.usageNow.rc6.value)+' '+root.usageNow.rc6.unit;
+                                text: truncateNumber(100 - root.usageNow.rc6.value) + ' ' + root.usageNow.rc6.unit
                                 // opacity: .7
                             }
                         }
@@ -210,30 +209,33 @@ ColumnLayout {
 
                         RowLayout {
                             PlasmaComponents3.Label {
-                                text: "Frequency";
+                                text: "Frequency"
                                 opacity: 1
                             }
-                            Item { Layout.fillWidth: true }
+                            Item {
+                                Layout.fillWidth: true
+                            }
                             PlasmaComponents3.Label {
-                                text: truncateNumber(usageNow.frequency.actual)+' '+usageNow.frequency.unit;
+                                text: truncateNumber(usageNow.frequency.actual) + ' ' + usageNow.frequency.unit
                                 // opacity: .7
                             }
                         }
 
                         ColumnLayout {
-                            visible: usageNow["imc-bandwidth"].reads !== -1
-                                && usageNow["imc-bandwidth"].writes
+                            visible: usageNow["imc-bandwidth"].reads !== -1 && usageNow["imc-bandwidth"].writes
                             Loader {
                                 sourceComponent: dividerComponent
                             }
                             RowLayout {
                                 PlasmaComponents3.Label {
-                                    text: "IMC Reads";
+                                    text: "IMC Reads"
                                     opacity: 1
                                 }
-                                Item { Layout.fillWidth: true }
+                                Item {
+                                    Layout.fillWidth: true
+                                }
                                 PlasmaComponents3.Label {
-                                    text: truncateNumber(usageNow["imc-bandwidth"].reads)+' '+usageNow["imc-bandwidth"].unit;
+                                    text: truncateNumber(usageNow["imc-bandwidth"].reads) + ' ' + usageNow["imc-bandwidth"].unit
                                 }
                             }
 
@@ -242,38 +244,39 @@ ColumnLayout {
                             }
                             RowLayout {
                                 PlasmaComponents3.Label {
-                                    text: "IMC Writes";
+                                    text: "IMC Writes"
                                     opacity: 1
                                 }
-                                Item { Layout.fillWidth: true }
+                                Item {
+                                    Layout.fillWidth: true
+                                }
                                 PlasmaComponents3.Label {
-                                    text: truncateNumber(usageNow["imc-bandwidth"].writes)+' '+usageNow["imc-bandwidth"].unit;
+                                    text: truncateNumber(usageNow["imc-bandwidth"].writes) + ' ' + usageNow["imc-bandwidth"].unit
                                     // opacity: .7
                                 }
                             }
                         }
 
-                        
                         // ---------------------------------------------------------
-
-                        
 
                         // ---------------------------------------------------------
 
                         PlasmaExtras.Heading {
                             level: 3
-                            text: "Power";
+                            text: "Power"
                             Layout.alignment: Qt.AlignHCenter
                         }
 
                         RowLayout {
                             PlasmaComponents3.Label {
-                                text: "GPU";
+                                text: "GPU"
                                 opacity: 1
                             }
-                            Item { Layout.fillWidth: true }
+                            Item {
+                                Layout.fillWidth: true
+                            }
                             PlasmaComponents3.Label {
-                                text: truncateNumber(usageNow.power.GPU)+' '+usageNow.power.unit;
+                                text: truncateNumber(usageNow.power.GPU) + ' ' + usageNow.power.unit
                                 // opacity: .7
                             }
                         }
@@ -284,20 +287,21 @@ ColumnLayout {
 
                         RowLayout {
                             PlasmaComponents3.Label {
-                                text: "Package";
+                                text: "Package"
                                 opacity: 1
                             }
-                            Item { Layout.fillWidth: true }
+                            Item {
+                                Layout.fillWidth: true
+                            }
                             PlasmaComponents3.Label {
-                                text: truncateNumber(usageNow.power.Package)+' '+usageNow.power.unit;
+                                text: truncateNumber(usageNow.power.Package) + ' ' + usageNow.power.unit
                                 // opacity: .7
                             }
                         }
-                        
 
                         PlasmaExtras.Heading {
                             level: 3
-                            text: "Engine Utilization";
+                            text: "Engine Utilization"
                             Layout.alignment: Qt.AlignHCenter
                         }
 
@@ -308,12 +312,14 @@ ColumnLayout {
                             ColumnLayout {
                                 RowLayout {
                                     PlasmaComponents3.Label {
-                                        text: "Render/3D";
+                                        text: "Render/3D"
                                         opacity: 1
                                     }
-                                    Item { Layout.fillWidth: true }
+                                    Item {
+                                        Layout.fillWidth: true
+                                    }
                                     PlasmaComponents3.Label {
-                                        text: truncateNumber(usageNow.engines["Render/3D"].busy)+' '+usageNow.engines["Render/3D"].unit;
+                                        text: truncateNumber(usageNow.engines["Render/3D"].busy) + ' ' + usageNow.engines["Render/3D"].unit
                                         // opacity: .7
                                     }
                                 }
@@ -324,17 +330,21 @@ ColumnLayout {
                                 }
                             }
 
-                            Loader { sourceComponent: dividerComponent }
+                            Loader {
+                                sourceComponent: dividerComponent
+                            }
 
                             ColumnLayout {
                                 RowLayout {
                                     PlasmaComponents3.Label {
-                                        text: "Video Acceleration";
+                                        text: "Video Acceleration"
                                         opacity: 1
                                     }
-                                    Item { Layout.fillWidth: true }
+                                    Item {
+                                        Layout.fillWidth: true
+                                    }
                                     PlasmaComponents3.Label {
-                                        text: truncateNumber(usageNow.engines["Video"].busy)+' '+usageNow.engines["Video"].unit;
+                                        text: truncateNumber(usageNow.engines["Video"].busy) + ' ' + usageNow.engines["Video"].unit
                                         // opacity: .7
                                     }
                                 }
@@ -345,17 +355,21 @@ ColumnLayout {
                                 }
                             }
 
-                            Loader { sourceComponent: dividerComponent }
+                            Loader {
+                                sourceComponent: dividerComponent
+                            }
 
                             ColumnLayout {
                                 RowLayout {
                                     PlasmaComponents3.Label {
-                                        text: "Video Enhance";
+                                        text: "Video Enhance"
                                         opacity: 1
                                     }
-                                    Item { Layout.fillWidth: true }
+                                    Item {
+                                        Layout.fillWidth: true
+                                    }
                                     PlasmaComponents3.Label {
-                                        text: truncateNumber(usageNow.engines["VideoEnhance"].busy)+' '+usageNow.engines["VideoEnhance"].unit;
+                                        text: truncateNumber(usageNow.engines["VideoEnhance"].busy) + ' ' + usageNow.engines["VideoEnhance"].unit
                                         // opacity: .7
                                     }
                                 }
@@ -366,17 +380,21 @@ ColumnLayout {
                                 }
                             }
 
-                            Loader { sourceComponent: dividerComponent }
+                            Loader {
+                                sourceComponent: dividerComponent
+                            }
 
                             ColumnLayout {
                                 RowLayout {
                                     PlasmaComponents3.Label {
-                                        text: "Blitter";
+                                        text: "Blitter"
                                         opacity: 1
                                     }
-                                    Item { Layout.fillWidth: true }
+                                    Item {
+                                        Layout.fillWidth: true
+                                    }
                                     PlasmaComponents3.Label {
-                                        text: truncateNumber(usageNow.engines["Blitter"].busy)+' '+usageNow.engines["Blitter"].unit;
+                                        text: truncateNumber(usageNow.engines["Blitter"].busy) + ' ' + usageNow.engines["Blitter"].unit
                                         // opacity: .7
                                     }
                                 }
@@ -386,8 +404,6 @@ ColumnLayout {
                                     engineName: 'Blitter'
                                 }
                             }
-
-
                         }
 
                         // *****************************************************************

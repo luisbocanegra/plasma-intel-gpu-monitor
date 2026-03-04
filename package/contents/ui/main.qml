@@ -9,7 +9,7 @@ import "code/utils.js" as Utils
 import "code/globals.js" as Globals
 
 PlasmoidItem {
-    id:main
+    id: main
     width: Kirigami.Units.gridUnit * 10
     height: Kirigami.Units.gridUnit * 4
     property var usageNow: Globals.baseStats
@@ -23,9 +23,7 @@ PlasmoidItem {
     property var clientsBlitter: []
     property var engineIcon: "icon-idle.svg"
     property color idleColor: Kirigami.ColorUtils.tintWithAlpha(Kirigami.Theme.backgroundColor, Kirigami.Theme.textColor, .5)
-    property string badgeLightness: Kirigami.ColorUtils.brightnessForColor(Kirigami.Theme.backgroundColor) ===
-                                Kirigami.ColorUtils.Dark ?
-                                0.5 : 0.38
+    property string badgeLightness: Kirigami.ColorUtils.brightnessForColor(Kirigami.Theme.backgroundColor) === Kirigami.ColorUtils.Dark ? 0.5 : 0.38
     property color badgeColor: idleColor
     property var card: plasmoid.configuration.card
     property int maxClients: plasmoid.configuration.max_clients
@@ -37,16 +35,15 @@ PlasmoidItem {
 
     Plasmoid.icon: Qt.resolvedUrl("../icons/" + engineIcon).toString().replace("file://", "")
 
-    property bool needsToBeSquare: (Plasmoid.containmentType & PlasmaCore.Types.CustomEmbeddedContainment)
-                | (Plasmoid.containmentDisplayHints & PlasmaCore.Types.ContainmentForcesSquarePlasmoids)
+    property bool needsToBeSquare: (Plasmoid.containmentType & PlasmaCore.Types.CustomEmbeddedContainment) | (Plasmoid.containmentDisplayHints & PlasmaCore.Types.ContainmentForcesSquarePlasmoids)
 
     onNeedsToBeSquareChanged: {
-        Qt.callLater(function() {
+        Qt.callLater(function () {
             if (plasmoid.configuration.needsToBeSquare !== needsToBeSquare) {
-                plasmoid.configuration.needsToBeSquare = needsToBeSquare
+                plasmoid.configuration.needsToBeSquare = needsToBeSquare;
                 plasmoid.configuration.writeConfig();
             }
-        })
+        });
     }
 
     compactRepresentation: CompactRepresentation {
@@ -83,17 +80,17 @@ PlasmoidItem {
         engine: "executable"
         connectedSources: []
 
-        onNewData: function(source, data) {
-            var exitCode = data["exit code"]
-            var exitStatus = data["exit status"]
-            var stdout = data["stdout"]
-            var stderr = data["stderr"]
-            exited(source, exitCode, exitStatus, stdout, stderr)
-            disconnectSource(source) // cmd finished
+        onNewData: function (source, data) {
+            var exitCode = data["exit code"];
+            var exitStatus = data["exit status"];
+            var stdout = data["stdout"];
+            var stderr = data["stderr"];
+            exited(source, exitCode, exitStatus, stdout, stderr);
+            disconnectSource(source); // cmd finished
         }
 
         function exec(cmd) {
-            getStats.connectSource(cmd)
+            getStats.connectSource(cmd);
         }
 
         signal exited(string cmd, int exitCode, int exitStatus, string stdout, string stderr)
@@ -103,36 +100,36 @@ PlasmoidItem {
         target: getStats
         function onExited(cmd, exitCode, exitStatus, stdout, stderr) {
             if (exitCode !== 124) {
-                commandEerror = `command: ${cmd}\nexit code: ${exitCode}\nexit status: ${exitStatus}\nstdout: ${stdout}\nstderr: ${stderr}\n`
-                return
+                commandEerror = `command: ${cmd}\nexit code: ${exitCode}\nexit status: ${exitStatus}\nstdout: ${stdout}\nstderr: ${stderr}\n`;
+                return;
             }
             statsString = stdout.trim();
             let usageTemp = Utils.getCurrentUsage(statsString);
             if (usageTemp) {
-                usageLast = usageTemp
+                usageLast = usageTemp;
             } else {
-                usageTemp = usageLast
+                usageTemp = usageLast;
             }
             if (!usageTemp || Object.keys(usageTemp).length === 0) {
-                return
+                return;
             }
-            commandEerror = ""
-            usageTemp = Utils.mergeObjects(Globals.baseStats, usageTemp)
+            commandEerror = "";
+            usageTemp = Utils.mergeObjects(Globals.baseStats, usageTemp);
             usageNow = Utils.renameEngines(usageTemp);
-            clients3d = Utils.getSortedClients(usageNow,'Render/3D')
-            clientsVideo = Utils.getSortedClients(usageNow,'Video')
-            clientsVideoEnhance = Utils.getSortedClients(usageNow,'VideoEnhance')
-            var activeEngine = Utils.getActiveEngineIcon(usageNow, threshold3d, thresholdVideo, thresholdVideoEnhance, thresholdBlitter)
-            engineIcon = activeEngine.icon
-            badgeColor = activeEngine.color
-            currentEngineUsage = activeEngine.busy
+            clients3d = Utils.getSortedClients(usageNow, 'Render/3D');
+            clientsVideo = Utils.getSortedClients(usageNow, 'Video');
+            clientsVideoEnhance = Utils.getSortedClients(usageNow, 'VideoEnhance');
+            var activeEngine = Utils.getActiveEngineIcon(usageNow, threshold3d, thresholdVideo, thresholdVideoEnhance, thresholdBlitter);
+            engineIcon = activeEngine.icon;
+            badgeColor = activeEngine.color;
+            currentEngineUsage = activeEngine.busy;
         }
     }
 
     Timer {
-        interval: 2000;
-        running: true;
-        repeat: true;
+        interval: 2000
+        running: true
+        repeat: true
         onTriggered: {
             getStats.exec(statsCommand);
         }

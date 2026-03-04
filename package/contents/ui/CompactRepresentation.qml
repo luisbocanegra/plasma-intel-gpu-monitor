@@ -35,7 +35,7 @@ Loader {
         hoverEnabled: true
 
         onClicked: {
-            main.expanded = !main.expanded
+            main.expanded = !main.expanded;
         }
     }
 
@@ -73,11 +73,11 @@ Loader {
                         verticalCenter: parent.bottom
                     }
                     visible: showUsageMode === 1 && badgeStyle === 1
-                    
+
                     property Item icon: plasmoidIcon
                     property real scaling: 1
                     color: badgeColor
-                    width: Math.min(parseInt(icon.height / 2.5) , 10)
+                    width: Math.min(parseInt(icon.height / 2.5), 10)
                     height: width
                     radius: width / 2
                     opacity: 1

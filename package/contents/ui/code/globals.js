@@ -53,4 +53,4 @@ const baseStats = {
     }
   },
   "clients": {}
-}
+};

@@ -8,7 +8,7 @@ import org.kde.plasma.plasmoid
 import "components" as Components
 
 KCM.SimpleKCM {
-    id:root
+    id: root
     property var textAreaPadding: 10
     property var controlWidth: 48
     signal configurationChanged
@@ -31,30 +31,29 @@ KCM.SimpleKCM {
     property alias cfg_usageSource: usageSourceComboBox.currentIndex
 
     property var showUsageModes: {
-        let modes = ["Disable", "Badge"]
+        let modes = ["Disable", "Badge"];
         if (canShowMoreInCompactMode) {
-            modes.push("Beside icon")
+            modes.push("Beside icon");
         }
-        return modes
+        return modes;
     }
-
 
     P5Support.DataSource {
         id: getCards
         engine: "executable"
         connectedSources: []
 
-        onNewData: function(source, data) {
-            var exitCode = data["exit code"]
-            var exitStatus = data["exit status"]
-            var stdout = data["stdout"]
-            var stderr = data["stderr"]
-            exited(source, exitCode, exitStatus, stdout, stderr)
-            disconnectSource(source) // cmd finished
+        onNewData: function (source, data) {
+            var exitCode = data["exit code"];
+            var exitStatus = data["exit status"];
+            var stdout = data["stdout"];
+            var stderr = data["stderr"];
+            exited(source, exitCode, exitStatus, stdout, stderr);
+            disconnectSource(source); // cmd finished
         }
 
         function exec(cmd) {
-            getCards.connectSource(cmd)
+            getCards.connectSource(cmd);
         }
 
         signal exited(string cmd, int exitCode, int exitStatus, string stdout, string stderr)
@@ -64,36 +63,35 @@ KCM.SimpleKCM {
         target: getCards
         function onExited(cmd, exitCode, exitStatus, stdout, stderr) {
             cardsString = stdout.trim();
-            cardsList = getCardsList(cardsString)
+            cardsList = getCardsList(cardsString);
         }
     }
 
     function getCardsList(cardsString) {
+        var lines = cardsString.split("\n");
 
-        var lines = cardsString.split("\n")
+        var devices = [];
 
-        var devices = []
-
-        lines.forEach((line) => {
+        lines.forEach(line => {
             if (line.startsWith("card")) {
                 var parts = line.split(/\s+/);
-                var device = {}
-                device.dri = parts[0]
-                device.name = parts.slice(1, -1).join(" ")
-                device.ids = {}
+                var device = {};
+                device.dri = parts[0];
+                device.name = parts.slice(1, -1).join(" ");
+                device.ids = {};
 
-                var partsId = parts[parts.length - 1].split(":")[1].split(",")
+                var partsId = parts[parts.length - 1].split(":")[1].split(",");
 
-                partsId.forEach((identifier) => {
-                    var parts = identifier.split("=")
-                    device.ids[parts[0]] = parts[1]
-                })
+                partsId.forEach(identifier => {
+                    var parts = identifier.split("=");
+                    device.ids[parts[0]] = parts[1];
+                });
 
-                device.label = "/dev/dri/" + device.dri + " "+ device.name + " " + device.ids.vendor + ":"+device.ids.device + " (card "+device.ids.card+")"
-                devices.push(device)
+                device.label = "/dev/dri/" + device.dri + " " + device.name + " " + device.ids.vendor + ":" + device.ids.device + " (card " + device.ids.card + ")";
+                devices.push(device);
             }
         });
-        return devices
+        return devices;
     }
 
     Component.onCompleted: {
@@ -108,32 +106,31 @@ KCM.SimpleKCM {
         id: generalPage
         Layout.alignment: Qt.AlignTop
 
-
         // Make card selection a component so we can load after cardsList is ready
-        // Component doesnt work with Kirigami.FormData.label, 
+        // Component doesnt work with Kirigami.FormData.label,
         // Loader {
         //     id: myLoader
         //     // asynchronous: true
         // }
 
         // Component {
-            // id: comboBoxComponent
-            Components.MyComboBox {
-                id: cardCombo
-                model: root.cardsList
-                configName: "card"
-                textRole: "label"
-                Kirigami.FormData.label: "Card:"
-                onConfigValueChanged: {
-                    cfg_card = configValue
-                }
+        // id: comboBoxComponent
+        Components.MyComboBox {
+            id: cardCombo
+            model: root.cardsList
+            configName: "card"
+            textRole: "label"
+            Kirigami.FormData.label: "Card:"
+            onConfigValueChanged: {
+                cfg_card = configValue;
             }
+        }
         // }
 
         // Component.onCompleted: {
         //     startupTimer.start()
         // }
-        
+
         // Timer {
         //     id: startupTimer
         //     interval: 2000
@@ -157,7 +154,7 @@ KCM.SimpleKCM {
             }
 
             onAccepted: {
-                cfg_max_clients = parseInt(text)
+                cfg_max_clients = parseInt(text);
             }
         }
 
@@ -206,21 +203,21 @@ KCM.SimpleKCM {
         }
 
         ComboBox {
-            Kirigami.FormData.label: i18n("Show usage:")
             id: showUsageModeComboBox
+            Kirigami.FormData.label: i18n("Show usage:")
             model: showUsageModes
         }
 
         ComboBox {
-            Kirigami.FormData.label: i18n("Badge style:")
             id: badgeStyleComboBox
+            Kirigami.FormData.label: i18n("Badge style:")
             model: ["Percentage", "Color circle"]
             visible: cfg_showUsageMode === 1
         }
 
         ComboBox {
-            Kirigami.FormData.label: i18n("Usage source:")
             id: usageSourceComboBox
+            Kirigami.FormData.label: i18n("Usage source:")
             model: ["Current engine", "Total (RC6)"]
         }
     }
