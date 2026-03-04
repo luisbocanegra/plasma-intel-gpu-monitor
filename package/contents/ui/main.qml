@@ -24,8 +24,8 @@ PlasmoidItem {
     property var clientsVideoEnhance: []
     property var clientsBlitter: []
     property var engineIcon: "icon-idle.svg"
-    property color idleColor: Kirigami.ColorUtils.tintWithAlpha(PlasmaCore.Theme.backgroundColor, PlasmaCore.Theme.textColor, .5)
-    property string badgeLightness: Kirigami.ColorUtils.brightnessForColor(PlasmaCore.Theme.backgroundColor) ===
+    property color idleColor: Kirigami.ColorUtils.tintWithAlpha(Kirigami.Theme.backgroundColor, Kirigami.Theme.textColor, .5)
+    property string badgeLightness: Kirigami.ColorUtils.brightnessForColor(Kirigami.Theme.backgroundColor) ===
                                 Kirigami.ColorUtils.Dark ?
                                 0.5 : 0.38
     property color badgeColor: idleColor
