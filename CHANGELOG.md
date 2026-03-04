@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.3](https://github.com/luisbocanegra/plasma-intel-gpu-monitor/compare/v0.3.2...v0.3.3) (2026-03-04)
+
+
+### Bug Fixes
+
+* badge color in Plasma 6.6 ([a04117a](https://github.com/luisbocanegra/plasma-intel-gpu-monitor/commit/a04117a6886f7ccd9589e41a432e66999ec8139f))
+
 ## [0.3.2](https://github.com/luisbocanegra/plasma-intel-gpu-monitor/compare/v0.3.1...v0.3.2) (2025-05-02)
 
 
